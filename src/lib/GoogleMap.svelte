@@ -49,6 +49,10 @@
     margin-right: 15px;
   }
 
+  .label-text {
+    width: 120px;
+  }
+
   @media (min-width: 768px) {
     .map-container {
       width: 100%;
@@ -64,16 +68,51 @@
   }
 </style>
 
+<!-- Legend -->
 <div bind:this="{mapElement}" class="map-container">
-  <div bind:this="{legendElement}" class="legend">
-    <div class="legend-item">
-      <div class="legend-color bg-red-500"></div> Cat1
+  <div
+    bind:this="{legendElement}"
+    class="card fixed bottom-4 left-4 shadow-lg p-4 space-y-4 bg-white items-center"
+  >
+    <h2 class="card-title">Legend</h2>
+    <div class="flex items-center">
+      <div class="avatar">
+        <div class="w-16 rounded-full">
+          <img src="https://cdn.iconscout.com/icon/premium/png-512-thumb/american-shorthair-1975261-1664591.png?f=avif&w=256" />
+        </div>
+      </div>
+      <div class="form-control">
+        <label class="cursor-pointer label">
+          <span class="label-text">Cat Damir</span>
+          <input type="checkbox" checked="checked" class="checkbox checkbox-secondary" />
+        </label>
+      </div>
     </div>
-    <div class="legend-item">
-      <div class="legend-color bg-yellow-500"></div> Cat2
+    <div class="flex items-center">
+      <div class="avatar">
+        <div class="w-16 rounded-full">
+          <img src="https://cdn.iconscout.com/icon/premium/png-512-thumb/abyssinnian-cat-1975262-1664592.png?f=avif&w=256"/>
+        </div>
+      </div>
+      <div class="form-control">
+        <label class="cursor-pointer label">
+          <span class="label-text">Cat Zhi Lin</span>
+          <input type="checkbox" checked="checked" class="checkbox checkbox-secondary" />
+        </label>
+      </div>
     </div>
-    <div class="legend-item">
-      <div class="legend-color bg-green-500"></div> Cat3
+    <div class="flex items-center">
+      <div class="avatar">
+        <div class="w-16 rounded-full">
+          <img src="https://cdn.iconscout.com/icon/premium/png-512-thumb/nebelung-1975276-1664606.png?f=avif&w=256" />
+        </div>
+      </div>
+      <div class="form-control">
+        <label class="cursor-pointer label">
+          <span class="label-text">Cat Punn</span>
+          <input type="checkbox" checked="checked" class="checkbox checkbox-secondary" />
+        </label>
+      </div>
     </div>
   </div>
 </div>
