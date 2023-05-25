@@ -1,9 +1,9 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
-
 <script>
       import GoogleMap from '$lib/GoogleMap.svelte';
-
-</script>
-
-<GoogleMap />
+    </script>
+    
+    <div class="container mx-auto px-4">
+      <div class="flex flex-col items-center justify-center min-h-screen">
+        <GoogleMap />
+      </div>
+    </div>
