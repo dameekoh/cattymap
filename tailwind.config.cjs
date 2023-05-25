@@ -4,6 +4,9 @@ export default {
   theme: {
     extend: {},
   },
+  // daisyui: {
+  //   themes: ["valentine"],
+  // },
   plugins: [require('daisyui')],
 }
 
