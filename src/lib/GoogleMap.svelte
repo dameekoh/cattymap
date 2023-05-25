@@ -25,7 +25,7 @@
 <style>
   .map-container {
     width: 100%;
-    height: 400px;
+    height: 700px;
   }
 
   @media (min-width: 768px) {
