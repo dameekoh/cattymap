@@ -13,6 +13,19 @@
       map = new google.maps.Map(mapElement, {
         center: { lat: -34.397, lng: 150.644 },
         zoom: 8,
+        options: {
+          styles: [
+            {
+              "featureType": "poi",
+              "elementType": "labels",
+              "stylers": [
+                {
+                  "visibility": "off"
+                }
+              ]
+            },
+          ]
+        }
       });
 
       // Add the legend to the map
@@ -51,6 +64,24 @@
 
   .label-text {
     width: 120px;
+    margin-left: 10%;
+  }
+
+  .profile-pic-container {
+    width: 3rem;
+    border-radius: 9999px;
+    position: relative;
+    background-color: #fce4e3;
+    box-shadow: 0px 0px 3.5px #e5b4b3;
+  }
+
+  .profile-pic {
+    width: 70.7%;
+    height: auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
   }
 
   @media (min-width: 768px) {
@@ -70,15 +101,12 @@
 
 <!-- Legend -->
 <div bind:this="{mapElement}" class="map-container">
-  <div
-    bind:this="{legendElement}"
-    class="card fixed bottom-4 left-4 shadow-lg p-4 space-y-4 bg-white items-center"
-  >
+  <div bind:this="{legendElement}" class="card fixed bottom-4 left-4 shadow-lg p-4 space-y-4 bg-white items-center">
     <h2 class="card-title">Legend</h2>
     <div class="flex items-center">
       <div class="avatar">
-        <div class="w-16 rounded-full">
-          <img src="https://cdn.iconscout.com/icon/premium/png-512-thumb/american-shorthair-1975261-1664591.png?f=avif&w=256" />
+        <div class="profile-pic-container">
+          <img class="profile-pic" src="https://cdn.iconscout.com/icon/premium/png-512-thumb/american-shorthair-1975261-1664591.png?f=avif&w=256" />
         </div>
       </div>
       <div class="form-control">
@@ -90,8 +118,8 @@
     </div>
     <div class="flex items-center">
       <div class="avatar">
-        <div class="w-16 rounded-full">
-          <img src="https://cdn.iconscout.com/icon/premium/png-512-thumb/abyssinnian-cat-1975262-1664592.png?f=avif&w=256"/>
+        <div class="profile-pic-container">
+          <img class="profile-pic" src="https://cdn.iconscout.com/icon/premium/png-512-thumb/abyssinnian-cat-1975262-1664592.png?f=avif&w=256"/>
         </div>
       </div>
       <div class="form-control">
@@ -103,8 +131,8 @@
     </div>
     <div class="flex items-center">
       <div class="avatar">
-        <div class="w-16 rounded-full">
-          <img src="https://cdn.iconscout.com/icon/premium/png-512-thumb/nebelung-1975276-1664606.png?f=avif&w=256" />
+        <div class="profile-pic-container">
+          <img class='profile-pic' src="https://cdn.iconscout.com/icon/premium/png-512-thumb/nebelung-1975276-1664606.png?f=avif&w=256" />
         </div>
       </div>
       <div class="form-control">
