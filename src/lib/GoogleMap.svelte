@@ -13,7 +13,9 @@
     script.onload = () => {
       map = new google.maps.Map(mapElement, {
         center: { lat: 36.368865, lng: 127.362103 },
-        zoom: 18,
+        zoom: 17,
+        minZoom: 16,
+        maxZoom: 20,
         disableDefaultUI: true,
         options: {
           styles: [
