@@ -60,11 +60,6 @@
     document.head.appendChild(script);
     return () => script.remove();
   });
-
-  //try to set boundaries by event listener
-  //failed, tho
-  
-
 </script>
 
 <style>
