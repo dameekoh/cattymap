@@ -4,6 +4,7 @@
   let map;
   let mapElement;
   let legendElement;
+  let boundary;
 
   onMount(() => {
     const script = document.createElement('script');
@@ -11,8 +12,8 @@
     script.async = true;
     script.onload = () => {
       map = new google.maps.Map(mapElement, {
-        center: { lat: -34.397, lng: 150.644 },
-        zoom: 8,
+        center: { lat: 36.368865, lng: 127.362103 },
+        zoom: 18,
         disableDefaultUI: true,
         options: {
           styles: [
@@ -21,7 +22,7 @@
               "elementType": "labels",
               "stylers": [
                 {
-                  "visibility": "off"
+                  "visibility": "on"
                 }
               ]
             },
@@ -29,12 +30,41 @@
         }
       });
 
+    boundary = new google.maps.LatLngBounds(
+     new google.maps.LatLng(36.362357, 127.355266), 
+     new google.maps.LatLng(36.377535, 127.368785)
+   );
+
+   google.maps.event.addListener(map, 'dragend', function() {
+    if (boundary.contains(map.getCenter())) return;
+
+    var c = map.getCenter(),
+        x = c.lng(),
+        y = c.lat(),
+        maxX = boundary.getNorthEast().lng(),
+        maxY = boundary.getNorthEast().lat(),
+        minX = boundary.getSouthWest().lng(),
+        minY = boundary.getSouthWest().lat();
+
+    if (x < minX) x = minX;
+    if (x > maxX) x = maxX;
+    if (y < minY) y = minY;
+    if (y > maxY) y = maxY;
+
+    map.setCenter(new google.maps.LatLng(y, x));
+   });
+
       // Add the legend to the map
       map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(legendElement);
     };
     document.head.appendChild(script);
     return () => script.remove();
   });
+
+  //try to set boundaries by event listener
+  //failed, tho
+  
+
 </script>
 
 <style>
