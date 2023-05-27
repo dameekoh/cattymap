@@ -1,5 +1,6 @@
 <script>
   import { onMount } from 'svelte';
+  // import catData from './catData.json';
 
 // fire base
   import { initializeApp } from "firebase/app";
@@ -22,43 +23,15 @@
   //reference root 
   const dataRef = ref(database);
 
-  const data = {
-    postID: 0,
-    name: 'Punn',
-    lat: 36.36663825762871,
-    lng: 127.36639587552834
-  }
-
-  const data2 = {
-    postID: 1, 
-    name: 'Damir',
-    lat: 36.36986928099243, 
-    lng: 127.36580578954506
-  }
-
-  const data3 = {
-    postID: 2,
-    name: 'Zhi Lin',
-    lat: 36.36986928099243,
-    lng: 127.36580578954506
-  }
-
-  const datainJSON = JSON.stringify(data);
-  const data2inJSON = JSON.stringify(data2);
-  const data3inJSON = JSON.stringify(data3);
-
+  let postID = 0;
+  let catData;
 
   // function to send data to database 
-  function sendToDB(catData) {
-    const catDataObj = JSON.parse(catData);
+  function sendToDB(catDataObj) {
     const uniqueKey = catDataObj.postID
-    const dataToUpdate = { [uniqueKey]: {name: catDataObj.name, lat: catDataObj.lat, lng: catDataObj.lng} };
+    const dataToUpdate = { [uniqueKey]: {name: catDataObj.name, latitude: catDataObj.lat, longitude: catDataObj.lng,  avatar: catDataObj.avatar}};
     update(dataRef, dataToUpdate);
   }
-
-  sendToDB(datainJSON);
-  sendToDB(data2inJSON);
-  sendToDB(data3inJSON);
 
   // function to get data from database 
   function fetchFromDB() {
@@ -68,12 +41,12 @@
     })
   }
 
-  fetchFromDB();
-
   let map;
   let mapElement;
   let legendElement;
   let boundary;
+  let inputName;
+  let coordinates = [];
 
   onMount(() => {
     const script = document.createElement('script');
@@ -101,11 +74,13 @@
         }
       });
 
+    //set boundaries for KAIST
     boundary = new google.maps.LatLngBounds(
-     new google.maps.LatLng(36.362357, 127.355266), 
-     new google.maps.LatLng(36.377535, 127.368785)
+    new google.maps.LatLng(36.362357, 127.355266), 
+    new google.maps.LatLng(36.377535, 127.368785)
    );
 
+   //prevent dragging outside those boundaries
    google.maps.event.addListener(map, 'dragend', function() {
     if (boundary.contains(map.getCenter())) return;
 
@@ -125,12 +100,84 @@
     map.setCenter(new google.maps.LatLng(y, x));
    });
 
-      // Add the legend to the map
-      map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(legendElement);
+   //get Lat-Long based on mouse click 
+   //and input name (for testing)
+   map.addListener("click", (mapsMouseEvent) => {
+    const position = mapsMouseEvent.latLng.toJSON();
+
+    //close existing window
+    inputName?.close();
+
+    //add input field
+    var contentString = '<div id="content">'+
+                        '<select name="catName" id="catName">'+
+                        '<option value=0>- select cat -</option>'+
+                        '<option value="Cat Damir">Damir</option>'+
+                        '<option value="Cat Zhi Lin">Zhi Lin</option>'+
+                        '<option value="Cat Punn">Punn</option>'+
+                        '</select>'+
+                        '</div>';
+    
+    inputName = new google.maps.InfoWindow({
+                      position: mapsMouseEvent.latLng,
+                      content: contentString
+                    });
+
+    inputName.open(map);
+
+    //listen to the input
+    isGoogleDomReady(inputName);
+
+    function isGoogleDomReady(infowindow){
+        google.maps.event.addListener(infowindow, 'domready', function () {
+            const catName = document.getElementById('catName');
+
+            catName.oninput = function() {
+              const name = catName.value; 
+              if (name == 'Cat Zhi Lin'){
+                sendToDB({postID: postID++, name: name, ...position, avatar: "https://cdn.iconscout.com/icon/premium/png-512-thumb/abyssinnian-cat-1975262-1664592.png?f=avif&w=256"}); 
+              } else if (name == 'Cat Damir'){
+                sendToDB({postID: postID++, name: name, ...position, avatar:"https://cdn.iconscout.com/icon/premium/png-512-thumb/american-shorthair-1975261-1664591.png?f=avif&w=256"}); 
+              } else if (name == 'Cat Punn'){
+                sendToDB({postID: postID++, name: name, ...position, avatar:"https://cdn.iconscout.com/icon/premium/png-512-thumb/nebelung-1975276-1664606.png?f=avif&w=256"}); 
+              }
+            }
+        });
+    }
+  });
+
+    // Add the legend to the map
+    map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(legendElement);
+    addCatMarkers();
     };
     document.head.appendChild(script);
     return () => script.remove();
   });
+
+  function addCatMarkers() {
+  catData = fetchFromDB();
+  catData?.forEach(cat => {
+    const marker = new google.maps.Marker({
+      position: { lat: cat.latitude, lng: cat.longitude },
+      map: map,
+      icon: {
+        url: cat.avatar,
+        scaledSize: new google.maps.Size(48, 48) // Adjust the size of the icon if needed
+      },
+      title: cat.name
+    });
+    const infoWindow = new google.maps.InfoWindow({
+      content: `<h3>${cat.name}</h3>`
+    });
+    infoWindow.open(map, marker);
+    // marker.addListener('click', () => {
+      
+    // });
+  });
+}
+
+
+
 </script>
 
 <style>
