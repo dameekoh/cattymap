@@ -1,5 +1,6 @@
 <script>
   import { onMount } from 'svelte';
+  import catData from './catData.json';
 
   let map;
   let mapElement;
@@ -58,10 +59,36 @@
 
       // Add the legend to the map
       map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(legendElement);
+      addCatMarkers();
     };
     document.head.appendChild(script);
     return () => script.remove();
   });
+
+  function addCatMarkers() {
+  catData.forEach(cat => {
+    const marker = new google.maps.Marker({
+      position: { lat: cat.latitude, lng: cat.longitude },
+      map: map,
+      icon: {
+        url: cat.avatar,
+        scaledSize: new google.maps.Size(48, 48) // Adjust the size of the icon if needed
+      },
+      title: cat.name
+    });
+
+    const infoWindow = new google.maps.InfoWindow({
+      content: `<h3>${cat.name}</h3>`
+    });
+
+    marker.addListener('click', () => {
+      infoWindow.open(map, marker);
+    });
+  });
+}
+
+
+
 </script>
 
 <style>
