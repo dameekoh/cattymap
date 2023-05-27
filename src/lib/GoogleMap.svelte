@@ -5,6 +5,8 @@
 // fire base
   import { initializeApp } from "firebase/app";
   import { ref, push, child, get, set, getDatabase, onValue, update } from 'firebase/database';
+  import markerIcon from "../images/marker.png";
+
 
   const firebaseConfig = {
   apiKey: "AIzaSyBEQ0yl78oVx87pxPJd8Jrt-LOp7wPmTLA",
@@ -20,6 +22,9 @@
   const app = initializeApp(firebaseConfig);
 
   const database = getDatabase(app);
+
+  const KAIST = { lat: 36.368865, lng: 127.362103 };
+
   //reference root 
   const dataRef = ref(database);
 
@@ -32,13 +37,6 @@
   }
 
   // function to get data from database 
-  // function fetchFromDB() {
-  //   let data;
-  //   onValue(dataRef, (snapshot) => {
-  //     data = snapshot.val();
-  //   })
-  //   return data; 
-  // }
   function fetchFromDB() {
   return new Promise((resolve, reject) => {
     onValue(dataRef, (snapshot) => {
@@ -50,35 +48,57 @@
   });
 }
 
-  let map;
-  let mapElement;
-  let legendElement;
-  let boundary;
-  let inputName;
-  let coordinates = [];
+  let map, mapElement, legendElement, boundary, inputName, currentLocation;
 
   onMount(() => {
+    setCurrentPosition();
     const script = document.createElement('script');
     script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBEQ0yl78oVx87pxPJd8Jrt-LOp7wPmTLA`;
     script.async = true;
     script.onload = () => {
       map = new google.maps.Map(mapElement, {
-        center: { lat: 36.368865, lng: 127.362103 },
-        zoom: 17,
+        center: (currentLocation) ? (currentLocation) : KAIST,
+        zoom: 16,
         minZoom: 16,
         maxZoom: 20,
         disableDefaultUI: true,
         options: {
           styles: [
             {
-              "featureType": "poi",
+              "featureType": "poi.attraction",
               "elementType": "labels",
-              "stylers": [
-                {
-                  "visibility": "on"
-                }
-              ]
+              "stylers": [{ "visibility": "off" }]
             },
+            {
+              "featureType": "poi.business",
+              "elementType": "labels",
+              "stylers": [{ "visibility": "off" }]
+            },
+            {
+              "featureType": "poi.place_of_worship",
+              "elementType": "labels",
+              "stylers": [{ "visibility": "off" }]
+            },
+            {
+              "featureType": "poi.medical",
+              "elementType": "labels",
+              "stylers": [{ "visibility": "off" }]
+            },
+            {
+              "featureType": "poi.park",
+              "elementType": "labels",
+              "stylers": [{ "visibility": "off" }]
+            },
+            {
+              "featureType": "road",
+              "elementType": "labels",
+              "stylers": [{ "visibility": "off" }]
+            },
+            {
+              "featureType": "transit",
+              "elementType": "labels",
+              "stylers": [{ "visibility": "off" }]
+            }
           ]
         }
       });
@@ -93,7 +113,7 @@
    google.maps.event.addListener(map, 'dragend', function() {
     if (boundary.contains(map.getCenter())) return;
 
-    var c = map.getCenter(),
+    let c = map.getCenter(),
         x = c.lng(),
         y = c.lat(),
         maxX = boundary.getNorthEast().lng(),
@@ -143,13 +163,12 @@
 
             catName.oninput = function() {
               const name = catName.value; 
-              if (name == 'Cat Zhi Lin'){
-                sendToDB({postID: new Date(), name: name, ...position, avatar: "https://cdn.iconscout.com/icon/premium/png-512-thumb/abyssinnian-cat-1975262-1664592.png?f=avif&w=256"}); 
-              } else if (name == 'Cat Damir'){
-                sendToDB({postID: new Date(), name: name, ...position, avatar:"https://cdn.iconscout.com/icon/premium/png-512-thumb/american-shorthair-1975261-1664591.png?f=avif&w=256"}); 
-              } else if (name == 'Cat Punn'){
-                sendToDB({postID: new Date(), name: name, ...position, avatar:"https://cdn.iconscout.com/icon/premium/png-512-thumb/nebelung-1975276-1664606.png?f=avif&w=256"}); 
-              }
+              const avatar = (name == 'Cat Zhi Lin') ? ("https://cdn.iconscout.com/icon/premium/png-512-thumb/abyssinnian-cat-1975262-1664592.png?f=avif&w=256")
+                            :(name == 'Cat Damir') ? ("https://cdn.iconscout.com/icon/premium/png-512-thumb/american-shorthair-1975261-1664591.png?f=avif&w=256")
+                            :(name == 'Cat Punn') ? ("https://cdn.iconscout.com/icon/premium/png-512-thumb/nebelung-1975276-1664606.png?f=avif&w=256")
+                            : (null);
+              
+              sendToDB({postID: new Date(), name: name, ...position, avatar: avatar});
               inputName.close();
               addCatMarkers();
             }
@@ -159,7 +178,9 @@
 
     // Add the legend to the map
     map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(legendElement);
-      addCatMarkers();
+    
+    addCatMarkers();
+    addUserMarker();
     };
     document.head.appendChild(script);
     return () => script.remove();
@@ -168,24 +189,7 @@
  async function addCatMarkers() {
   try {
     const catData = await fetchFromDB();
-    // catData?.forEach(cat => {
-    //   const marker = new google.maps.Marker({
-    //     position: { lat: cat.latitude, lng: cat.longitude },
-    //     map: map,
-    //     icon: {
-    //       url: cat.avatar,
-    //       scaledSize: new google.maps.Size(48, 48) // Adjust the size of the icon if needed
-    //     },
-    //     title: cat.name
-    //   });
-    //   const infoWindow = new google.maps.InfoWindow({
-    //     content: `<h3>${cat.name}</h3>`
-    //   });
-    //   marker.addListener('click', () => {
-    //     infoWindow.open(map, marker);
-    //   });
-    // });
-    for (const [key,cat] of Object.entries(catData)){
+    for (const [key, cat] of Object.entries(catData)){
       const marker = new google.maps.Marker({
         position: { lat: cat.latitude, lng: cat.longitude },
         map: map,
@@ -207,7 +211,31 @@
   }
 }
 
+function addUserMarker(){
+  const marker = new google.maps.Marker({
+    position: currentLocation,
+    map: map,
+    icon:{
+          url: markerIcon,
+          scaledSize: new google.maps.Size(36, 36)
+        }
+  })
+}
 
+function setCurrentPosition(){
+  if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          currentLocation = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          };
+        }
+      );
+    } else {
+      return null
+    }
+}
 
 
 </script>
@@ -277,7 +305,7 @@
 
 <!-- Legend -->
 <div bind:this="{mapElement}" class="map-container">
-  <div bind:this="{legendElement}" class="card fixed bottom-4 left-4 shadow-lg p-4 space-y-4 bg-white items-center">
+  <div bind:this="{legendElement}" class="card fixed bottom-4 left-4 shadow-lg p-4 ml-4 mb-4 space-y-4 bg-white items-center">
     <h2 class="card-title">Legend</h2>
     <div class="flex items-center">
       <div class="avatar">
