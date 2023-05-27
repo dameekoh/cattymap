@@ -150,6 +150,7 @@
               } else if (name == 'Cat Punn'){
                 sendToDB({postID: new Date(), name: name, ...position, avatar:"https://cdn.iconscout.com/icon/premium/png-512-thumb/nebelung-1975276-1664606.png?f=avif&w=256"}); 
               }
+              inputName.close();
               addCatMarkers();
             }
         });
