@@ -1,6 +1,75 @@
 <script>
   import { onMount } from 'svelte';
 
+// fire base
+  import { initializeApp } from "firebase/app";
+  import { ref, push, child, get, set, getDatabase, onValue, update } from 'firebase/database';
+
+  const firebaseConfig = {
+  apiKey: "AIzaSyBEQ0yl78oVx87pxPJd8Jrt-LOp7wPmTLA",
+  authDomain: "cattymap-1b9a3.firebaseapp.com",
+  projectId: "cattymap-1b9a3",
+  storageBucket: "cattymap-1b9a3.appspot.com",
+  messagingSenderId: "368074086145",
+  appId: "1:368074086145:web:393f103f6ca32a06bbad00",
+  measurementId: "G-442J384EW1",
+  databaseURL: 'https://cattymap-1b9a3-default-rtdb.asia-southeast1.firebasedatabase.app/',
+  };
+
+  const app = initializeApp(firebaseConfig);
+
+  const database = getDatabase(app);
+  //reference root 
+  const dataRef = ref(database);
+
+  const data = {
+    postID: 0,
+    name: 'Punn',
+    lat: 36.36663825762871,
+    lng: 127.36639587552834
+  }
+
+  const data2 = {
+    postID: 1, 
+    name: 'Damir',
+    lat: 36.36986928099243, 
+    lng: 127.36580578954506
+  }
+
+  const data3 = {
+    postID: 2,
+    name: 'Zhi Lin',
+    lat: 36.36986928099243,
+    lng: 127.36580578954506
+  }
+
+  const datainJSON = JSON.stringify(data);
+  const data2inJSON = JSON.stringify(data2);
+  const data3inJSON = JSON.stringify(data3);
+
+
+  // function to send data to database 
+  function sendToDB(catData) {
+    const catDataObj = JSON.parse(catData);
+    const uniqueKey = catDataObj.postID
+    const dataToUpdate = { [uniqueKey]: {name: catDataObj.name, lat: catDataObj.lat, lng: catDataObj.lng} };
+    update(dataRef, dataToUpdate);
+  }
+
+  sendToDB(datainJSON);
+  sendToDB(data2inJSON);
+  sendToDB(data3inJSON);
+
+  // function to get data from database 
+  function fetchFromDB() {
+    onValue(dataRef, (snapshot) => {
+      const data = snapshot.val();
+      console.log(data)
+    })
+  }
+
+  fetchFromDB();
+
   let map;
   let mapElement;
   let legendElement;
