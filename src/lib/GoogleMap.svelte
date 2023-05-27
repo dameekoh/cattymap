@@ -5,6 +5,8 @@
   let mapElement;
   let legendElement;
   let boundary;
+  let inputName;
+  let coordinates = [];
 
   onMount(() => {
     const script = document.createElement('script');
@@ -32,11 +34,13 @@
         }
       });
 
+    //set boundaries for KAIST
     boundary = new google.maps.LatLngBounds(
-     new google.maps.LatLng(36.362357, 127.355266), 
-     new google.maps.LatLng(36.377535, 127.368785)
+    new google.maps.LatLng(36.362357, 127.355266), 
+    new google.maps.LatLng(36.377535, 127.368785)
    );
 
+   //prevent dragging outside those boundaries
    google.maps.event.addListener(map, 'dragend', function() {
     if (boundary.contains(map.getCenter())) return;
 
@@ -56,12 +60,54 @@
     map.setCenter(new google.maps.LatLng(y, x));
    });
 
-      // Add the legend to the map
-      map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(legendElement);
+   //get Lat-Long based on mouse click 
+   //and input name (for testing)
+   map.addListener("click", (mapsMouseEvent) => {
+    const position = mapsMouseEvent.latLng.toJSON();
+
+    //close existing window
+    inputName?.close();
+
+    //add input field
+    var contentString = '<div id="content">'+
+                        '<select name="catName" id="catName">'+
+                        '<option value=0>- select cat -</option>'+
+                        '<option value="Cat Damir">Damir</option>'+
+                        '<option value="Cat Zhi Lin">Zhi Lin</option>'+
+                        '<option value="Cat Punn">Punn</option>'+
+                        '</select>'+
+                        '</div>';
+    
+    inputName = new google.maps.InfoWindow({
+                      position: mapsMouseEvent.latLng,
+                      content: contentString
+                    });
+
+    inputName.open(map);
+
+    //listen to the input
+    isGoogleDomReady(inputName);
+
+    function isGoogleDomReady(infowindow){
+        google.maps.event.addListener(infowindow, 'domready', function () {
+            const catName = document.getElementById('catName');
+
+            catName.oninput = function() {
+              const name = catName.value;     
+              coordinates.push({name: name, ...position});         
+              console.log(coordinates); 
+            }
+        });
+    }
+  });
+
+    // Add the legend to the map
+    map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(legendElement);
     };
     document.head.appendChild(script);
     return () => script.remove();
   });
+
 </script>
 
 <style>
