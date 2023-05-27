@@ -23,7 +23,6 @@
   //reference root 
   const dataRef = ref(database);
 
-  let catData;
 
   // function to send data to database 
   function sendToDB(catDataObj) {
@@ -146,14 +145,12 @@
               const name = catName.value; 
               if (name == 'Cat Zhi Lin'){
                 sendToDB({postID: new Date(), name: name, ...position, avatar: "https://cdn.iconscout.com/icon/premium/png-512-thumb/abyssinnian-cat-1975262-1664592.png?f=avif&w=256"}); 
-                postID ++;
               } else if (name == 'Cat Damir'){
                 sendToDB({postID: new Date(), name: name, ...position, avatar:"https://cdn.iconscout.com/icon/premium/png-512-thumb/american-shorthair-1975261-1664591.png?f=avif&w=256"}); 
-                postID ++;
               } else if (name == 'Cat Punn'){
                 sendToDB({postID: new Date(), name: name, ...position, avatar:"https://cdn.iconscout.com/icon/premium/png-512-thumb/nebelung-1975276-1664606.png?f=avif&w=256"}); 
-                postID ++;
               }
+              addCatMarkers();
             }
         });
     }
@@ -170,7 +167,24 @@
  async function addCatMarkers() {
   try {
     const catData = await fetchFromDB();
-    catData?.forEach(cat => {
+    // catData?.forEach(cat => {
+    //   const marker = new google.maps.Marker({
+    //     position: { lat: cat.latitude, lng: cat.longitude },
+    //     map: map,
+    //     icon: {
+    //       url: cat.avatar,
+    //       scaledSize: new google.maps.Size(48, 48) // Adjust the size of the icon if needed
+    //     },
+    //     title: cat.name
+    //   });
+    //   const infoWindow = new google.maps.InfoWindow({
+    //     content: `<h3>${cat.name}</h3>`
+    //   });
+    //   marker.addListener('click', () => {
+    //     infoWindow.open(map, marker);
+    //   });
+    // });
+    for (const [key,cat] of Object.entries(catData)){
       const marker = new google.maps.Marker({
         position: { lat: cat.latitude, lng: cat.longitude },
         map: map,
@@ -186,7 +200,7 @@
       marker.addListener('click', () => {
         infoWindow.open(map, marker);
       });
-    });
+    }
   } catch (error) {
     console.error('Error fetching cat data:', error);
   }
