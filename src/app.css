@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* remove gg maps terms of use */
+.gmnoprint {
+    display: none;
+}
+.gm-style > div > div > a > div > img {
+    display: none;
+}

@@ -29,14 +29,20 @@
   const dataRef = ref(database);
 
 
-  // function to send data to database 
+  /**
+   * function to send data to database  
+   * @param {Object} catDataObj
+   */
   function sendToDB(catDataObj) {
     const uniqueKey = catDataObj.postID
     const dataToUpdate = { [uniqueKey]: {name: catDataObj.name, latitude: catDataObj.lat, longitude: catDataObj.lng,  avatar: catDataObj.avatar}};
     update(dataRef, dataToUpdate);
   }
 
-  // function to get data from database 
+  /**
+   * function to get data from database 
+   * @returns {any}
+   */
   function fetchFromDB() {
   return new Promise((resolve, reject) => {
     onValue(dataRef, (snapshot) => {
@@ -48,7 +54,7 @@
   });
 }
 
-  let map, mapElement, legendElement, boundary, inputName, currentLocation;
+  let map, mapElement, legendElement, boundary, inputName, currentPosition;
 
   onMount(() => {
     setCurrentPosition();
@@ -57,7 +63,7 @@
     script.async = true;
     script.onload = () => {
       map = new google.maps.Map(mapElement, {
-        center: (currentLocation) ? (currentLocation) : KAIST,
+        center: (currentPosition) ? (currentPosition) : KAIST,
         zoom: 16,
         minZoom: 16,
         maxZoom: 20,
@@ -109,72 +115,68 @@
     new google.maps.LatLng(36.377535, 127.368785)
    );
 
-   //prevent dragging outside those boundaries
-   google.maps.event.addListener(map, 'dragend', function() {
-    if (boundary.contains(map.getCenter())) return;
+    //prevent dragging outside those boundaries
+    google.maps.event.addListener(map, 'dragend', function() {
+      if (boundary.contains(map.getCenter())) return;
 
-    let c = map.getCenter(),
-        x = c.lng(),
-        y = c.lat(),
-        maxX = boundary.getNorthEast().lng(),
-        maxY = boundary.getNorthEast().lat(),
-        minX = boundary.getSouthWest().lng(),
-        minY = boundary.getSouthWest().lat();
+      let c = map.getCenter(),
+          x = c.lng(),
+          y = c.lat(),
+          maxX = boundary.getNorthEast().lng(),
+          maxY = boundary.getNorthEast().lat(),
+          minX = boundary.getSouthWest().lng(),
+          minY = boundary.getSouthWest().lat();
 
-    if (x < minX) x = minX;
-    if (x > maxX) x = maxX;
-    if (y < minY) y = minY;
-    if (y > maxY) y = maxY;
+      if (x < minX) x = minX;
+      if (x > maxX) x = maxX;
+      if (y < minY) y = minY;
+      if (y > maxY) y = maxY;
 
-    map.setCenter(new google.maps.LatLng(y, x));
-   });
+      map.setCenter(new google.maps.LatLng(y, x));
+    });
 
-   //get Lat-Long based on mouse click 
-   //and input name (for testing)
-   map.addListener("click", (mapsMouseEvent) => {
-    const position = mapsMouseEvent.latLng.toJSON();
+    //get Lat-Long based on mouse click 
+    //and input name (for testing)
+    map.addListener("click", (mapsMouseEvent) => {
+      const position = mapsMouseEvent.latLng.toJSON();
 
-    //close existing window
-    inputName?.close();
+      //close existing window
+      inputName?.close();
 
-    //add input field
-    var contentString = '<div id="content">'+
-                        '<select name="catName" id="catName">'+
-                        '<option value=0>- select cat -</option>'+
-                        '<option value="Cat Damir">Damir</option>'+
-                        '<option value="Cat Zhi Lin">Zhi Lin</option>'+
-                        '<option value="Cat Punn">Punn</option>'+
-                        '</select>'+
-                        '</div>';
-    
-    inputName = new google.maps.InfoWindow({
-                      position: mapsMouseEvent.latLng,
-                      content: contentString
-                    });
+      //add input field
+      var contentString = '<div id="content">'+
+                          '<select name="catName" id="catName">'+
+                          '<option value=0>- select cat -</option>'+
+                          '<option value="Cat Damir">Damir</option>'+
+                          '<option value="Cat Zhi Lin">Zhi Lin</option>'+
+                          '<option value="Cat Punn">Punn</option>'+
+                          '</select>'+
+                          '</div>';
+      
+      inputName = new google.maps.InfoWindow({
+                        position: mapsMouseEvent.latLng,
+                        content: contentString
+                      });
 
-    inputName.open(map);
+      inputName.open(map);
 
-    //listen to the input
-    isGoogleDomReady(inputName);
+      //listen to the input
+      google.maps.event.addListener(inputName, 'domready', function () {
+          const catName = document.getElementById('catName');
 
-    function isGoogleDomReady(infowindow){
-        google.maps.event.addListener(infowindow, 'domready', function () {
-            const catName = document.getElementById('catName');
-
-            catName.oninput = function() {
-              const name = catName.value; 
-              const avatar = (name == 'Cat Zhi Lin') ? ("https://cdn.iconscout.com/icon/premium/png-512-thumb/abyssinnian-cat-1975262-1664592.png?f=avif&w=256")
-                            :(name == 'Cat Damir') ? ("https://cdn.iconscout.com/icon/premium/png-512-thumb/american-shorthair-1975261-1664591.png?f=avif&w=256")
-                            :(name == 'Cat Punn') ? ("https://cdn.iconscout.com/icon/premium/png-512-thumb/nebelung-1975276-1664606.png?f=avif&w=256")
-                            : (null);
-              
-              sendToDB({postID: new Date(), name: name, ...position, avatar: avatar});
-              inputName.close();
-              addCatMarkers();
-            }
-        });
-    }
-  });
+          catName.oninput = function() {
+            const name = catName.value; 
+            const avatar = (name == 'Cat Zhi Lin') ? ("https://cdn.iconscout.com/icon/premium/png-512-thumb/abyssinnian-cat-1975262-1664592.png?f=avif&w=256")
+                          :(name == 'Cat Damir') ? ("https://cdn.iconscout.com/icon/premium/png-512-thumb/american-shorthair-1975261-1664591.png?f=avif&w=256")
+                          :(name == 'Cat Punn') ? ("https://cdn.iconscout.com/icon/premium/png-512-thumb/nebelung-1975276-1664606.png?f=avif&w=256")
+                          : (null);
+            
+            sendToDB({postID: new Date(), name: name, ...position, avatar: avatar});
+            inputName.close();
+            addCatMarkers();
+          }
+      });
+    });
 
     // Add the legend to the map
     map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(legendElement);
@@ -186,34 +188,43 @@
     return () => script.remove();
   });
 
- async function addCatMarkers() {
-  try {
-    const catData = await fetchFromDB();
-    for (const [key, cat] of Object.entries(catData)){
-      const marker = new google.maps.Marker({
-        position: { lat: cat.latitude, lng: cat.longitude },
-        map: map,
-        icon: {
-          url: cat.avatar,
-          scaledSize: new google.maps.Size(48, 48) // Adjust the size of the icon if needed
-        },
-        title: cat.name
-      });
-      const infoWindow = new google.maps.InfoWindow({
-        content: `<h3>${cat.name}</h3>`
-      });
-      marker.addListener('click', () => {
-        infoWindow.open(map, marker);
-      });
+
+
+  /**
+   * Adding cat markers according to the data from database
+   */
+  async function addCatMarkers() {
+    try {
+      const catData = await fetchFromDB();
+      for (const [key, cat] of Object.entries(catData)){
+        const marker = new google.maps.Marker({
+          position: { lat: cat.latitude, lng: cat.longitude },
+          map: map,
+          icon: {
+            url: cat.avatar,
+            scaledSize: new google.maps.Size(48, 48) // Adjust the size of the icon if needed
+          },
+          title: cat.name
+        });
+        const infoWindow = new google.maps.InfoWindow({
+          content: `<h3>${cat.name}</h3>`
+        });
+        marker.addListener('click', () => {
+          infoWindow.open(map, marker);
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching cat data:', error);
     }
-  } catch (error) {
-    console.error('Error fetching cat data:', error);
-  }
 }
 
+
+/**
+ * Add user marker based on the current location
+ */
 function addUserMarker(){
   const marker = new google.maps.Marker({
-    position: currentLocation,
+    position: currentPosition,
     map: map,
     icon:{
           url: markerIcon,
@@ -222,11 +233,15 @@ function addUserMarker(){
   })
 }
 
+
+/**
+ * Set the use current position
+ */
 function setCurrentPosition(){
   if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          currentLocation = {
+          currentPosition = {
             lat: position.coords.latitude,
             lng: position.coords.longitude,
           };
@@ -236,14 +251,12 @@ function setCurrentPosition(){
       return null
     }
 }
-
-
 </script>
 
 <style>
   .map-container {
     width: 100%;
-    height: 700px;
+    height: 100%;
   }
 
   /* Legend styles */
@@ -305,8 +318,8 @@ function setCurrentPosition(){
 
 <!-- Legend -->
 <div bind:this="{mapElement}" class="map-container">
-  <div bind:this="{legendElement}" class="card fixed bottom-4 left-4 shadow-lg p-4 ml-4 mb-4 space-y-4 bg-white items-center">
-    <h2 class="card-title">Legend</h2>
+  <div bind:this="{legendElement}" class="card fixed bottom-4 left-4 shadow-xl p-4 ml-7 space-y-4 bg-white items-left">
+    <h2 class="card-title text-neutral-500">Cats</h2>
     <div class="flex items-center">
       <div class="avatar">
         <div class="profile-pic-container">
@@ -315,7 +328,7 @@ function setCurrentPosition(){
       </div>
       <div class="form-control">
         <label class="cursor-pointer label">
-          <span class="label-text">Cat Damir</span>
+          <span class="label-text text-neutral-400 text-base">Cat Damir</span>
           <input type="checkbox" checked="checked" class="checkbox checkbox-secondary" />
         </label>
       </div>
@@ -328,7 +341,7 @@ function setCurrentPosition(){
       </div>
       <div class="form-control">
         <label class="cursor-pointer label">
-          <span class="label-text">Cat Zhi Lin</span>
+          <span class="label-text text-neutral-400 text-base">Cat Zhi Lin</span>
           <input type="checkbox" checked="checked" class="checkbox checkbox-secondary" />
         </label>
       </div>
@@ -341,7 +354,7 @@ function setCurrentPosition(){
       </div>
       <div class="form-control">
         <label class="cursor-pointer label">
-          <span class="label-text">Cat Punn</span>
+          <span class="label-text text-neutral-400 text-base">Cat Punn</span>
           <input type="checkbox" checked="checked" class="checkbox checkbox-secondary" />
         </label>
       </div>
