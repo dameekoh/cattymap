@@ -54,7 +54,7 @@
   });
 }
 
-  let map, mapElement, legendElement, boundary, inputName, currentPosition;
+  let map, mapElement, legendElement, boundary, inputName, currentPosition, catWindow;
 
   onMount(() => {
     setCurrentPosition();
@@ -141,11 +141,12 @@
       const position = mapsMouseEvent.latLng.toJSON();
 
       //close existing window
+      catWindow?.close();
       inputName?.close();
 
       //add input field
       var contentString = '<div id="content">'+
-                          '<select name="catName" id="catName">'+
+                          '<select name="catName" id="catName" class="select bg-white">'+
                           '<option value=0>- select cat -</option>'+
                           '<option value="Cat Damir">Damir</option>'+
                           '<option value="Cat Zhi Lin">Zhi Lin</option>'+
@@ -157,7 +158,7 @@
                         position: mapsMouseEvent.latLng,
                         content: contentString
                       });
-
+      
       inputName.open(map);
 
       //listen to the input
@@ -206,11 +207,16 @@
           },
           title: cat.name
         });
-        const infoWindow = new google.maps.InfoWindow({
-          content: `<h3>${cat.name}</h3>`
+        
+        catWindow = new google.maps.InfoWindow({
+          content: `<h3>${cat.name}</h3>` +
+                   '<div class="flex content-center item-center p-4">' +
+                   '<button class="btn bg-white" id="catRoute">go</button>' +
+                   '</div>'
         });
         marker.addListener('click', () => {
-          infoWindow.open(map, marker);
+          inputName?.close();
+          catWindow.open(map, marker);
         });
       }
     } catch (error) {
@@ -233,7 +239,6 @@ function addUserMarker(){
   })
 }
 
-
 /**
  * Set the use current position
  */
@@ -251,16 +256,22 @@ function setCurrentPosition(){
       return null
     }
 }
+
+function displayRoute(L1, L2) {
+
+}
 </script>
 
 <style>
   .map-container {
     width: 100%;
     height: 100%;
+    margin: 0%;
+    padding: 0%;
   }
 
   /* Legend styles */
-  .legend {
+  /* .legend {
     background-color: rgba(255, 255, 255, 0.8);
     padding: 10px;
     border-radius: 14px;
@@ -282,10 +293,10 @@ function setCurrentPosition(){
   .label-text {
     width: 120px;
     margin-left: 10%;
-  }
+  } */
 
   .profile-pic-container {
-    width: 3rem;
+    width: 10vw;
     border-radius: 9999px;
     position: relative;
     background-color: #fce4e3;
@@ -301,62 +312,63 @@ function setCurrentPosition(){
     transform: translate(-50%, -50%);
   }
 
-  @media (min-width: 768px) {
+  @media (min-width: 375px) {
     .map-container {
-      width: 100%;
-      height: 600px;
+      width: 375px;
+      height: 667px;
     }
   }
 
-  @media (min-width: 1024px) {
+  @media (min-width: 2000px) {
     .map-container {
       width: 100%;
-      height: 800px;
+      height: 100%;
     }
   }
 </style>
 
-<!-- Legend -->
-<div bind:this="{mapElement}" class="map-container">
-  <div bind:this="{legendElement}" class="card fixed bottom-4 left-4 shadow-xl p-4 ml-7 space-y-4 bg-white items-left">
-    <h2 class="card-title text-neutral-500">Cats</h2>
-    <div class="flex items-center">
-      <div class="avatar">
-        <div class="profile-pic-container">
-          <img class="profile-pic" src="https://cdn.iconscout.com/icon/premium/png-512-thumb/american-shorthair-1975261-1664591.png?f=avif&w=256" />
+<div style="height:100%; width: 100%;">
+  <div bind:this="{mapElement}" class="map-container">
+    <div bind:this="{legendElement}" class="card fixed bottom-4 left-4 shadow-xl p-4 ml-7 space-y-4 bg-white items-left">
+      <h2 class="card-title text-neutral-50 text-base text-slate-500">Cats</h2>
+      <div class="flex items-center">
+        <div class="avatar">
+          <div class="profile-pic-container">
+            <img class="profile-pic" src="https://cdn.iconscout.com/icon/premium/png-512-thumb/american-shorthair-1975261-1664591.png?f=avif&w=256" />
+          </div>
+        </div>
+        <div class="form-control">
+          <label class="cursor-pointer label">
+            <span class="label-text text-neutral-400 text-xs p-2">Cat Damir</span>
+            <input type="checkbox" checked="checked" class="checkbox checkbox-secondary" />
+          </label>
         </div>
       </div>
-      <div class="form-control">
-        <label class="cursor-pointer label">
-          <span class="label-text text-neutral-400 text-base">Cat Damir</span>
-          <input type="checkbox" checked="checked" class="checkbox checkbox-secondary" />
-        </label>
-      </div>
-    </div>
-    <div class="flex items-center">
-      <div class="avatar">
-        <div class="profile-pic-container">
-          <img class="profile-pic" src="https://cdn.iconscout.com/icon/premium/png-512-thumb/abyssinnian-cat-1975262-1664592.png?f=avif&w=256"/>
+      <div class="flex items-center">
+        <div class="avatar">
+          <div class="profile-pic-container">
+            <img class="profile-pic" src="https://cdn.iconscout.com/icon/premium/png-512-thumb/abyssinnian-cat-1975262-1664592.png?f=avif&w=256"/>
+          </div>
+        </div>
+        <div class="form-control">
+          <label class="cursor-pointer label">
+            <span class="label-text text-neutral-400 text-xs p-2">Cat Zhi Lin</span>
+            <input type="checkbox" checked="checked" class="checkbox checkbox-secondary" />
+          </label>
         </div>
       </div>
-      <div class="form-control">
-        <label class="cursor-pointer label">
-          <span class="label-text text-neutral-400 text-base">Cat Zhi Lin</span>
-          <input type="checkbox" checked="checked" class="checkbox checkbox-secondary" />
-        </label>
-      </div>
-    </div>
-    <div class="flex items-center">
-      <div class="avatar">
-        <div class="profile-pic-container">
-          <img class='profile-pic' src="https://cdn.iconscout.com/icon/premium/png-512-thumb/nebelung-1975276-1664606.png?f=avif&w=256" />
+      <div class="flex items-center">
+        <div class="avatar">
+          <div class="profile-pic-container">
+            <img class='profile-pic' src="https://cdn.iconscout.com/icon/premium/png-512-thumb/nebelung-1975276-1664606.png?f=avif&w=256" />
+          </div>
         </div>
-      </div>
-      <div class="form-control">
-        <label class="cursor-pointer label">
-          <span class="label-text text-neutral-400 text-base">Cat Punn</span>
-          <input type="checkbox" checked="checked" class="checkbox checkbox-secondary" />
-        </label>
+        <div class="form-control">
+          <label class="cursor-pointer label">
+            <span class="label-text text-neutral-400 text-xs p-2">Cat Punn</span>
+            <input type="checkbox" checked="checked" class="checkbox checkbox-secondary" />
+          </label>
+        </div>
       </div>
     </div>
   </div>

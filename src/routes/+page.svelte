@@ -1,10 +1,11 @@
 <script>
       import GoogleMap from '$lib/GoogleMap.svelte';
+      import LogIn from '$lib/log-in.svelte';
 </script>
 
-    <div class="container mx-auto px-4">
+    <div class="container">
       <div class="flex flex-col items-center justify-center min-h-screen">
-        <GoogleMap />
+        <LogIn />
       </div>
     </div>
     

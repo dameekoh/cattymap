@@ -2,6 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+html,
+body,
+#map-canvas {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  align-items: center;
+  text-align: center;
+}
+
 /* remove gg maps terms of use */
 .gmnoprint {
     display: none;
