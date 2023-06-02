@@ -5,6 +5,7 @@
 // fire base
   import { initializeApp } from "firebase/app";
   import { ref, push, child, get, set, getDatabase, onValue, update } from 'firebase/database';
+  import LedgerProfile from './LedgerProfile.svelte';
   import markerIcon from "../images/marker.png";
 
 
@@ -65,7 +66,7 @@
       map = new google.maps.Map(mapElement, {
         center: (currentPosition) ? (currentPosition) : KAIST,
         zoom: 16,
-        minZoom: 16,
+        minZoom: 15,
         maxZoom: 20,
         disableDefaultUI: true,
         options: {
@@ -295,81 +296,28 @@ function displayRoute(L1, L2) {
     margin-left: 10%;
   } */
 
-  .profile-pic-container {
-    width: 10vw;
-    border-radius: 9999px;
-    position: relative;
-    background-color: #fce4e3;
-    box-shadow: 0px 0px 3.5px #e5b4b3;
-  }
-
-  .profile-pic {
-    width: 70.7%;
-    height: auto;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
-
   @media (min-width: 375px) {
     .map-container {
-      width: 375px;
+      width: 100%;
       height: 667px;
     }
   }
 
-  @media (min-width: 2000px) {
+  @media (min-width: 1787px) {
     .map-container {
       width: 100%;
-      height: 100%;
+      height: 1062px;
     }
-  }
+  }  
 </style>
 
 <div style="height:100%; width: 100%;">
   <div bind:this="{mapElement}" class="map-container">
-    <div bind:this="{legendElement}" class="card fixed bottom-4 left-4 shadow-xl p-4 ml-7 space-y-4 bg-white items-left">
-      <h2 class="card-title text-neutral-50 text-base text-slate-500">Cats</h2>
-      <div class="flex items-center">
-        <div class="avatar">
-          <div class="profile-pic-container">
-            <img class="profile-pic" src="https://cdn.iconscout.com/icon/premium/png-512-thumb/american-shorthair-1975261-1664591.png?f=avif&w=256" />
-          </div>
-        </div>
-        <div class="form-control">
-          <label class="cursor-pointer label">
-            <span class="label-text text-neutral-400 text-xs p-2">Cat Damir</span>
-            <input type="checkbox" checked="checked" class="checkbox checkbox-secondary" />
-          </label>
-        </div>
-      </div>
-      <div class="flex items-center">
-        <div class="avatar">
-          <div class="profile-pic-container">
-            <img class="profile-pic" src="https://cdn.iconscout.com/icon/premium/png-512-thumb/abyssinnian-cat-1975262-1664592.png?f=avif&w=256"/>
-          </div>
-        </div>
-        <div class="form-control">
-          <label class="cursor-pointer label">
-            <span class="label-text text-neutral-400 text-xs p-2">Cat Zhi Lin</span>
-            <input type="checkbox" checked="checked" class="checkbox checkbox-secondary" />
-          </label>
-        </div>
-      </div>
-      <div class="flex items-center">
-        <div class="avatar">
-          <div class="profile-pic-container">
-            <img class='profile-pic' src="https://cdn.iconscout.com/icon/premium/png-512-thumb/nebelung-1975276-1664606.png?f=avif&w=256" />
-          </div>
-        </div>
-        <div class="form-control">
-          <label class="cursor-pointer label">
-            <span class="label-text text-neutral-400 text-xs p-2">Cat Punn</span>
-            <input type="checkbox" checked="checked" class="checkbox checkbox-secondary" />
-          </label>
-        </div>
-      </div>
+    <div bind:this="{legendElement}" class="card fixed left-1 shadow-xl p-3 ml-7 space-y-2 bg-white items-left">
+      <h2 class="card-title text-sm text-slate-500">Cats</h2>
+      <LedgerProfile profilePic = "https://cdn.iconscout.com/icon/premium/png-512-thumb/american-shorthair-1975261-1664591.png?f=avif&w=256" name = "Damir"/>
+      <LedgerProfile profilePic = "https://cdn.iconscout.com/icon/premium/png-512-thumb/abyssinnian-cat-1975262-1664592.png?f=avif&w=256" name = "Zhilin"/>
+      <LedgerProfile profilePic = "https://cdn.iconscout.com/icon/premium/png-512-thumb/nebelung-1975276-1664606.png?f=avif&w=256" name = "Punn" />
     </div>
   </div>
 </div>
