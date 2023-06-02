@@ -1,44 +1,323 @@
-<h1>
-  CattyMap
-</h1>
 <script>
   import { onMount } from 'svelte';
+  // import catData from './catData.json';
 
-  let map;
-  let mapElement;
+// fire base
+  import { initializeApp } from "firebase/app";
+  import { ref, push, child, get, set, getDatabase, onValue, update } from 'firebase/database';
+  import LedgerProfile from './LedgerProfile.svelte';
+  import markerIcon from "../images/marker.png";
+
+
+  const firebaseConfig = {
+  apiKey: "AIzaSyBEQ0yl78oVx87pxPJd8Jrt-LOp7wPmTLA",
+  authDomain: "cattymap-1b9a3.firebaseapp.com",
+  projectId: "cattymap-1b9a3",
+  storageBucket: "cattymap-1b9a3.appspot.com",
+  messagingSenderId: "368074086145",
+  appId: "1:368074086145:web:393f103f6ca32a06bbad00",
+  measurementId: "G-442J384EW1",
+  databaseURL: 'https://cattymap-1b9a3-default-rtdb.asia-southeast1.firebasedatabase.app/',
+  };
+
+  const app = initializeApp(firebaseConfig);
+
+  const database = getDatabase(app);
+
+  const KAIST = { lat: 36.368865, lng: 127.362103 };
+
+  //reference root 
+  const dataRef = ref(database);
+
+
+  /**
+   * function to send data to database  
+   * @param {Object} catDataObj
+   */
+  function sendToDB(catDataObj) {
+    const uniqueKey = catDataObj.postID
+    const dataToUpdate = { [uniqueKey]: {name: catDataObj.name, latitude: catDataObj.lat, longitude: catDataObj.lng,  avatar: catDataObj.avatar}};
+    update(dataRef, dataToUpdate);
+  }
+
+  /**
+   * function to get data from database 
+   * @returns {any}
+   */
+  function fetchFromDB() {
+  return new Promise((resolve, reject) => {
+    onValue(dataRef, (snapshot) => {
+      const data = snapshot.val();
+      resolve(data);
+    }, (error) => {
+      reject(error);
+    });
+  });
+}
+
+  let map, mapElement, legendElement, boundary, inputName, currentPosition, catWindow;
 
   onMount(() => {
+    setCurrentPosition();
     const script = document.createElement('script');
     script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBEQ0yl78oVx87pxPJd8Jrt-LOp7wPmTLA`;
     script.async = true;
     script.onload = () => {
       map = new google.maps.Map(mapElement, {
-        center: { lat: -34.397, lng: 150.644 },
-        zoom: 8,
+        center: (currentPosition) ? (currentPosition) : KAIST,
+        zoom: 16,
+        minZoom: 15,
+        maxZoom: 20,
+        disableDefaultUI: true,
+        options: {
+          styles: [
+            {
+              "featureType": "poi.attraction",
+              "elementType": "labels",
+              "stylers": [{ "visibility": "off" }]
+            },
+            {
+              "featureType": "poi.business",
+              "elementType": "labels",
+              "stylers": [{ "visibility": "off" }]
+            },
+            {
+              "featureType": "poi.place_of_worship",
+              "elementType": "labels",
+              "stylers": [{ "visibility": "off" }]
+            },
+            {
+              "featureType": "poi.medical",
+              "elementType": "labels",
+              "stylers": [{ "visibility": "off" }]
+            },
+            {
+              "featureType": "poi.park",
+              "elementType": "labels",
+              "stylers": [{ "visibility": "off" }]
+            },
+            {
+              "featureType": "road",
+              "elementType": "labels",
+              "stylers": [{ "visibility": "off" }]
+            },
+            {
+              "featureType": "transit",
+              "elementType": "labels",
+              "stylers": [{ "visibility": "off" }]
+            }
+          ]
+        }
       });
+
+    //set boundaries for KAIST
+    boundary = new google.maps.LatLngBounds(
+    new google.maps.LatLng(36.362357, 127.355266), 
+    new google.maps.LatLng(36.377535, 127.368785)
+   );
+
+    //prevent dragging outside those boundaries
+    google.maps.event.addListener(map, 'dragend', function() {
+      if (boundary.contains(map.getCenter())) return;
+
+      let c = map.getCenter(),
+          x = c.lng(),
+          y = c.lat(),
+          maxX = boundary.getNorthEast().lng(),
+          maxY = boundary.getNorthEast().lat(),
+          minX = boundary.getSouthWest().lng(),
+          minY = boundary.getSouthWest().lat();
+
+      if (x < minX) x = minX;
+      if (x > maxX) x = maxX;
+      if (y < minY) y = minY;
+      if (y > maxY) y = maxY;
+
+      map.setCenter(new google.maps.LatLng(y, x));
+    });
+
+    //get Lat-Long based on mouse click 
+    //and input name (for testing)
+    map.addListener("click", (mapsMouseEvent) => {
+      const position = mapsMouseEvent.latLng.toJSON();
+
+      //close existing window
+      catWindow?.close();
+      inputName?.close();
+
+      //add input field
+      var contentString = '<div id="content">'+
+                          '<select name="catName" id="catName" class="select bg-white">'+
+                          '<option value=0>- select cat -</option>'+
+                          '<option value="Cat Damir">Damir</option>'+
+                          '<option value="Cat Zhi Lin">Zhi Lin</option>'+
+                          '<option value="Cat Punn">Punn</option>'+
+                          '</select>'+
+                          '</div>';
+      
+      inputName = new google.maps.InfoWindow({
+                        position: mapsMouseEvent.latLng,
+                        content: contentString
+                      });
+      
+      inputName.open(map);
+
+      //listen to the input
+      google.maps.event.addListener(inputName, 'domready', function () {
+          const catName = document.getElementById('catName');
+
+          catName.oninput = function() {
+            const name = catName.value; 
+            const avatar = (name == 'Cat Zhi Lin') ? ("https://cdn.iconscout.com/icon/premium/png-512-thumb/abyssinnian-cat-1975262-1664592.png?f=avif&w=256")
+                          :(name == 'Cat Damir') ? ("https://cdn.iconscout.com/icon/premium/png-512-thumb/american-shorthair-1975261-1664591.png?f=avif&w=256")
+                          :(name == 'Cat Punn') ? ("https://cdn.iconscout.com/icon/premium/png-512-thumb/nebelung-1975276-1664606.png?f=avif&w=256")
+                          : (null);
+            
+            sendToDB({postID: new Date(), name: name, ...position, avatar: avatar});
+            inputName.close();
+            addCatMarkers();
+          }
+      });
+    });
+
+    // Add the legend to the map
+    map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(legendElement);
+    
+    addCatMarkers();
+    addUserMarker();
     };
     document.head.appendChild(script);
     return () => script.remove();
   });
+
+
+
+  /**
+   * Adding cat markers according to the data from database
+   */
+  async function addCatMarkers() {
+    try {
+      const catData = await fetchFromDB();
+      for (const [key, cat] of Object.entries(catData)){
+        const marker = new google.maps.Marker({
+          position: { lat: cat.latitude, lng: cat.longitude },
+          map: map,
+          icon: {
+            url: cat.avatar,
+            scaledSize: new google.maps.Size(48, 48) // Adjust the size of the icon if needed
+          },
+          title: cat.name
+        });
+        
+        catWindow = new google.maps.InfoWindow({
+          content: `<h3>${cat.name}</h3>` +
+                   '<div class="flex content-center item-center p-4">' +
+                   '<button class="btn bg-white" id="catRoute">go</button>' +
+                   '</div>'
+        });
+        marker.addListener('click', () => {
+          inputName?.close();
+          catWindow.open(map, marker);
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching cat data:', error);
+    }
+}
+
+
+/**
+ * Add user marker based on the current location
+ */
+function addUserMarker(){
+  const marker = new google.maps.Marker({
+    position: currentPosition,
+    map: map,
+    icon:{
+          url: markerIcon,
+          scaledSize: new google.maps.Size(36, 36)
+        }
+  })
+}
+
+/**
+ * Set the use current position
+ */
+function setCurrentPosition(){
+  if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          currentPosition = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          };
+        }
+      );
+    } else {
+      return null
+    }
+}
+
+function displayRoute(L1, L2) {
+
+}
 </script>
 
 <style>
   .map-container {
     width: 100%;
-    height: 400px;
+    height: 100%;
+    margin: 0%;
+    padding: 0%;
   }
 
-  @media (min-width: 768px) {
+  /* Legend styles */
+  /* .legend {
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 10px;
+    border-radius: 14px;
+    font-size: 14px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 40px;
+  }
+
+  .legend-color {
+    width: 16px;
+    height: 16px;
+    margin-right: 15px;
+  }
+
+  .label-text {
+    width: 120px;
+    margin-left: 10%;
+  } */
+
+  @media (min-width: 375px) {
     .map-container {
-      height: 600px;
+      width: 100%;
+      height: 667px;
     }
   }
 
-  @media (min-width: 1024px) {
+  @media (min-width: 1787px) {
     .map-container {
-      height: 800px;
+      width: 100%;
+      height: 1062px;
     }
-  }
+  }  
 </style>
 
-<div bind:this="{mapElement}" class="map-container"></div>
+<div style="height:100%; width: 100%;">
+  <div bind:this="{mapElement}" class="map-container">
+    <div bind:this="{legendElement}" class="card fixed left-1 shadow-xl p-3 ml-7 space-y-2 bg-white items-left">
+      <h2 class="card-title text-sm text-slate-500">Cats</h2>
+      <LedgerProfile profilePic = "https://cdn.iconscout.com/icon/premium/png-512-thumb/american-shorthair-1975261-1664591.png?f=avif&w=256" name = "Damir"/>
+      <LedgerProfile profilePic = "https://cdn.iconscout.com/icon/premium/png-512-thumb/abyssinnian-cat-1975262-1664592.png?f=avif&w=256" name = "Zhilin"/>
+      <LedgerProfile profilePic = "https://cdn.iconscout.com/icon/premium/png-512-thumb/nebelung-1975276-1664606.png?f=avif&w=256" name = "Punn" />
+    </div>
+  </div>
+</div>
