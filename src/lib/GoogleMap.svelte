@@ -1,10 +1,11 @@
 <script>
   import { onMount } from 'svelte';
+  import RangeSlider from "svelte-range-slider-pips";
   // import catData from './catData.json';
 
 // fire base
   import { initializeApp } from "firebase/app";
-  import { ref, push, child, get, set, getDatabase, onValue, update } from 'firebase/database';
+  import { get, set, ref, getDatabase, onValue, update } from 'firebase/database';
   import markerIcon from "../images/marker.png";
 
 
@@ -26,26 +27,60 @@
   const KAIST = { lat: 36.368865, lng: 127.362103 };
 
   //reference root 
-  const dataRef = ref(database);
+  const dataRef = ref(database, "/");
+  // reference Cat table (postNumber, name, latitude, longitude, avatar, image, likeCount)
+  const catPostRef = ref(database, "Cat");
+  // reference Comment table 
+  const commentRef = ref(database, "Comment");
+  // reference Cat post count 
+  const catPostCountRef = ref(database, "CatCount");
+  let catPostCount;
+  // reference Comment count 
+  const commentCountRef = ref(database, "CommentCount");
+  let commentCount;
 
+let radius = 1000; 
+
+function onRadiusChange(event){
+  console.log(radius);
+  addCatMarkers();
+}
 
   /**
    * function to send data to database  
    * @param {Object} catDataObj
    */
   function sendToDB(catDataObj) {
-    const uniqueKey = catDataObj.postID
-    const dataToUpdate = { [uniqueKey]: {name: catDataObj.name, latitude: catDataObj.lat, longitude: catDataObj.lng,  avatar: catDataObj.avatar}};
-    update(dataRef, dataToUpdate);
+    get(catPostCountRef).then((snapshot) => {
+      catPostCount = snapshot.val();
+      set(catPostCountRef, catPostCount + 1);
+      const uniqueKey = catPostCount;
+      const dataToUpdate = { [uniqueKey]: {name: catDataObj.name, 
+                                         latitude: catDataObj.lat, 
+                                         longitude: catDataObj.lng,  
+                                         avatar: catDataObj.avatar, 
+                                         image: catDataObj.image, 
+                                         likeCount: catDataObj.likeCount}};
+    update(catPostRef, dataToUpdate)
+        .then(() => {
+          addCatMarkers(); // Add cat markers immediately after updating the database
+        })
+        .catch((error) => {
+          console.error('Error updating database:', error);
+        });
+    }).catch((error) => {
+      console.error(error);
+    });
   }
+
 
   /**
    * function to get data from database 
    * @returns {any}
    */
-  function fetchFromDB() {
+  function fetchCatPostFromDB() {
   return new Promise((resolve, reject) => {
-    onValue(dataRef, (snapshot) => {
+    onValue(catPostRef, (snapshot) => {
       const data = snapshot.val();
       resolve(data);
     }, (error) => {
@@ -171,16 +206,15 @@
                           :(name == 'Cat Punn') ? ("https://cdn.iconscout.com/icon/premium/png-512-thumb/nebelung-1975276-1664606.png?f=avif&w=256")
                           : (null);
             
-            sendToDB({postID: new Date(), name: name, ...position, avatar: avatar});
+            sendToDB({postID: new Date(), name: name, ...position, avatar: avatar, image: "None", likeCount: 0});
             inputName.close();
-            addCatMarkers();
+            // addCatMarkers();
           }
       });
     });
 
     // Add the legend to the map
     map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(legendElement);
-    
     addCatMarkers();
     addUserMarker();
     };
@@ -195,17 +229,24 @@
    */
   async function addCatMarkers() {
     try {
-      const catData = await fetchFromDB();
+      const catData = await fetchCatPostFromDB();
+      const currentLatLng = new google.maps.LatLng(currentPosition.lat, currentPosition.lng);
+    
       for (const [key, cat] of Object.entries(catData)){
-        const marker = new google.maps.Marker({
-          position: { lat: cat.latitude, lng: cat.longitude },
-          map: map,
-          icon: {
-            url: cat.avatar,
-            scaledSize: new google.maps.Size(48, 48) // Adjust the size of the icon if needed
-          },
-          title: cat.name
-        });
+        const catLatLng = new google.maps.LatLng(cat.latitude, cat.longitude);
+        const distance = google.maps.geometry.spherical.computeDistanceBetween(currentLatLng, catLatLng);
+
+        if (distance <= radius){
+          const marker = new google.maps.Marker({
+            position: { lat: cat.latitude, lng: cat.longitude },
+            map: map,
+            icon: {
+              url: cat.avatar,
+              scaledSize: new google.maps.Size(48, 48) // Adjust the size of the icon if needed
+            },
+            title: cat.name
+          });
+        }
         const infoWindow = new google.maps.InfoWindow({
           content: `<h3>${cat.name}</h3>`
         });
@@ -316,6 +357,7 @@ function setCurrentPosition(){
   }
 </style>
 
+<input type="range" min="0" max="2000" step="1" bind:value={radius} on:input={onRadiusChange} />
 <!-- Legend -->
 <div bind:this="{mapElement}" class="map-container">
   <div bind:this="{legendElement}" class="card fixed bottom-4 left-4 shadow-xl p-4 ml-7 space-y-4 bg-white items-left">
