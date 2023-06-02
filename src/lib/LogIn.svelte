@@ -89,14 +89,6 @@ function login () {
     // Add this user to Firebase Database
     const database_ref = ref(database)
 
-    // Create User data
-    // const user_data = {
-    //   last_login : Date.now()
-    // }
-
-    // Push to Firebase Database
-    // set(ref(database, 'users/' + user.uid), user_data);
-
     // DOne
     alert('User Logged In!!')
 
