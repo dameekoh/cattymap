@@ -90,7 +90,7 @@ function onRadiusChange(event){
   });
 }
 
-  let map, mapElement, legendElement, boundary, inputName, currentPosition, catWindow;
+  let map, mapElement, legendElement, slider, boundary, inputName, currentPosition, catWindow;
 
   onMount(async () => {
     await setCurrentPosition();
@@ -217,6 +217,7 @@ function onRadiusChange(event){
 
     // Add the legend to the map
     map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(legendElement);
+    map.controls[google.maps.ControlPosition.LEFT_TOP].push(slider);
     addUserMarker();
     addCatMarkers();
     };
@@ -323,6 +324,11 @@ function displayRoute(L1, L2) {
     padding: 0%;
   }
 
+  .slider{
+    padding: 5%;
+    width: 70%;
+  }
+
   /* Legend styles */
   /* .legend {
     background-color: rgba(255, 255, 255, 0.8);
@@ -363,8 +369,10 @@ function displayRoute(L1, L2) {
   }   */
 </style>
   <div bind:this="{mapElement}" class="map-container">
+    <div bind:this="{slider}" class="slider">
+      <input type="range" min="0" max="2000" step="25" bind:value={radius} on:input={onRadiusChange} class="range range-secondary" />
+    </div>
     <div bind:this="{legendElement}" class="card fixed left-1 shadow-xl p-3 ml-7 space-y-2 bg-white items-left">
-      <input type="range" min="0" max="2000" step="25" bind:value={radius} on:input={onRadiusChange} class="range range-secondary m-5" />
       <h2 class="card-title text-sm text-slate-500">Cats</h2>
       <LedgerProfile profilePic = "https://cdn.iconscout.com/icon/premium/png-512-thumb/american-shorthair-1975261-1664591.png?f=avif&w=256" name = "Damir"/>
       <LedgerProfile profilePic = "https://cdn.iconscout.com/icon/premium/png-512-thumb/abyssinnian-cat-1975262-1664592.png?f=avif&w=256" name = "Zhilin"/>
