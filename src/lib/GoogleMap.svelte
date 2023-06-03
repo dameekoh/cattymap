@@ -56,7 +56,7 @@
   });
 }
 
-  let map, mapElement, legendElement, boundary, inputName, currentPosition, catWindow;
+  let map, mapElement, legendElement, cameraElement, boundary, inputName, currentPosition, catWindow;
 
   onMount(() => {
     setCurrentPosition();
@@ -183,6 +183,9 @@
 
     // Add the legend to the map
     map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(legendElement);
+    // Add map
+    map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(cameraElement);
+
     
     addCatMarkers();
     addUserMarker();
@@ -262,6 +265,27 @@ function setCurrentPosition(){
 function displayRoute(L1, L2) {
 
 }
+
+
+
+function openCamera() {
+  // Check if the device supports the getUserMedia API
+  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    // Open the camera
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then((stream) => {
+        // Camera access granted, do something with the stream if needed
+      })
+      .catch((error) => {
+        // Handle camera access denied or other errors
+        console.error('Error accessing camera:', error);
+      });
+  } else {
+    console.error('getUserMedia API is not supported on this device.');
+  }
+}
+
+
 </script>
 
 <style>
@@ -272,47 +296,13 @@ function displayRoute(L1, L2) {
     padding: 0%;
   }
 
-  /* Legend styles */
-  /* .legend {
-    background-color: rgba(255, 255, 255, 0.8);
-    padding: 10px;
-    border-radius: 14px;
-    font-size: 14px;
-  }
-
-  .legend-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 40px;
-  }
-
-  .legend-color {
-    width: 16px;
-    height: 16px;
-    margin-right: 15px;
-  }
-
-  .label-text {
-    width: 120px;
-    margin-left: 10%;
-  } */
-
-  /* @media (min-width: 375px) {
-    .map-container {
-      width: 375px;
-      height: 100%;
-    }
-  }
-
-  @media (min-width: 1787px) {
-    .map-container {
-      width: 100%;
-      height: 1062px;
-    }
-  }   */
 </style>
 
   <div bind:this="{mapElement}" class="map-container">
+    <div bind:this="{cameraElement}">
+      <button class="btn btn-active btn-secondary" on:click="{openCamera}">Camera</button>
+    </div>
+    
     <div bind:this="{legendElement}" class="card fixed left-1 shadow-xl p-3 ml-7 space-y-2 bg-white items-left">
       <h2 class="card-title text-sm text-slate-500">Cats</h2>
       <LedgerProfile profilePic = "https://cdn.iconscout.com/icon/premium/png-512-thumb/american-shorthair-1975261-1664591.png?f=avif&w=256" name = "Damir"/>

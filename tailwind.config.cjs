@@ -8,7 +8,7 @@ export default {
     extend: {},
   },
   daisyui: {
-    themes: ["valentine"],
+    themes: ["cupcake"],
   },
   plugins: [require('daisyui')],
 }

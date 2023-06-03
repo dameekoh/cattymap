@@ -2,18 +2,18 @@
       import GoogleMap from '$lib/GoogleMap.svelte';
       import LogIn from '$lib/LogIn.svelte';
 
-      let login = false;
+      let login = true;
 
       function updateLogInStatus(event){
         login = event.detail;
       }
 </script>
 
-<div class="app__header">
+<!-- <div class="app__header">
   <h1 class="header__text">
     CattyMap
   </h1>
-</div>
+</div> -->
 
 {#if login}
 
