@@ -3,6 +3,7 @@
   // import catData from './catData.json';
 
 // fire base
+  // import firebase from 'firebase/app';
   import { initializeApp } from "firebase/app";
   import { ref, push, child, get, set, getDatabase, onValue, update } from 'firebase/database';
   import LedgerProfile from './LedgerProfile.svelte';
