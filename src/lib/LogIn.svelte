@@ -22,7 +22,7 @@ const auth = getAuth();
 const dispatch = createEventDispatcher();
 let email, password, username;
 
-function register() {
+async function register() {
   // Get all our input fields
   email = document.getElementById('email').value
   password = document.getElementById('password').value
@@ -38,6 +38,13 @@ function register() {
     alert('Please input the username')
     return
   }
+
+  const snapshot = await get(ref(database, 'users/' + username));
+
+    if (snapshot.exists()){
+      alert("Username already in use. Please create a new one!");
+      return;
+    }
  
   // Move on with Auth
   createUserWithEmailAndPassword(auth, email, password)
@@ -158,11 +165,10 @@ function validate_field(field) {
     <div>
       <input type="text" id="email" placeholder="Your email" class="input input-bordered input-secondary w-full max-w-xs" />
       <input type="text" id="username" placeholder="Your username" class="input input-bordered input-secondary w-full max-w-xs" />
-      <input type="text" id="password" placeholder="Your password" class="input input-bordered input-secondary w-full max-w-xs" />
+      <input type="password" id="password" placeholder="Your password" class="input input-bordered input-secondary w-full max-w-xs" />
     
         <button class="btn btn-secondary" on:click={register}> Sign up </button>
         <button class="btn btn-secondary" on:click={login}> Log in </button>
     </div>
   </div>
 </div>
-
