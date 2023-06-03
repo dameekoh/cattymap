@@ -29,10 +29,6 @@
 
 {/if}
 
-<!-- <div class="app__container">
-    <GoogleMap />
-</div> -->
-
 <style>
   .app__header{
     height: 7%;
