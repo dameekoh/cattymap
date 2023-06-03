@@ -1,12 +1,26 @@
 <script>
-      import GoogleMap from '$lib/GoogleMap.svelte';
-      import LogIn from '$lib/LogIn.svelte';
+    import GoogleMap from '$lib/GoogleMap.svelte';
+    import LogIn from '$lib/LogIn.svelte';
+    import { onMount } from 'svelte';
 
-      let login = false;
+    let login = null;
+  let isLoading = true;
 
-      function updateLogInStatus(event){
-        login = event.detail;
-      }
+  onMount(async () => {
+    // Simulate an asynchronous login check
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    // Check if the user is logged in in the browser storage
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
+    login = isLoggedIn === 'true';
+    isLoading = false;
+  });
+
+  function updateLogInStatus(event) {
+    login = event.detail;
+    // Update the login status in the browser storage
+    localStorage.setItem('isLoggedIn', login.toString());
+  }
 </script>
 
 {#if login}
