@@ -74,7 +74,6 @@ function onRadiusChange(event){
     });
   }
 
-
   /**
    * function to get data from database 
    * @returns {any}
@@ -90,7 +89,8 @@ function onRadiusChange(event){
   });
 }
 
-  let map, mapElement, legendElement, boundary, inputName, currentPosition, catWindow;
+  let map, mapElement, legendElement, cameraElement, slider, boundary, inputName, currentPosition, catWindow;
+  
 
   onMount(async () => {
     await setCurrentPosition();
@@ -217,8 +217,14 @@ function onRadiusChange(event){
 
     // Add the legend to the map
     map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(legendElement);
+    // Add map
+    map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(cameraElement);
+
+    
+    map.controls[google.maps.ControlPosition.LEFT_TOP].push(slider);
     addUserMarker();
     addCatMarkers();
+    addUserMarker();
     };
     document.head.appendChild(script);
     return () => script.remove();
@@ -237,6 +243,7 @@ function onRadiusChange(event){
       for (const [key, cat] of Object.entries(catData)){
         const marker = new google.maps.Marker({
           position: { lat: cat.latitude, lng: cat.longitude },
+          map: map,
           icon: {
             url: cat.avatar,
             scaledSize: new google.maps.Size(48, 48) // Adjust the size of the icon if needed
@@ -313,6 +320,27 @@ function setCurrentPosition(){
 function displayRoute(L1, L2) {
 
 }
+
+
+
+function openCamera() {
+  // Check if the device supports the getUserMedia API
+  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    // Open the camera
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then((stream) => {
+        // Camera access granted, do something with the stream if needed
+      })
+      .catch((error) => {
+        // Handle camera access denied or other errors
+        console.error('Error accessing camera:', error);
+      });
+  } else {
+    console.error('getUserMedia API is not supported on this device.');
+  }
+}
+
+
 </script>
 
 <style>
@@ -323,6 +351,14 @@ function displayRoute(L1, L2) {
     padding: 0%;
   }
 
+  .slider{
+    padding: 5%;
+    width: 70%;
+  }
+
+  .camera{
+    padding: 5%;
+  }
   /* Legend styles */
   /* .legend {
     background-color: rgba(255, 255, 255, 0.8);
@@ -362,9 +398,15 @@ function displayRoute(L1, L2) {
     }
   }   */
 </style>
+
   <div bind:this="{mapElement}" class="map-container">
+    <div bind:this="{cameraElement}" class="camera">
+      <button class="btn btn-active btn-secondary" on:click="{openCamera}">Camera</button>
+    </div>
+    <div bind:this="{slider}" class="slider">
+      <input type="range" min="0" max="2000" step="25" bind:value={radius} on:input={onRadiusChange} class="range range-secondary" />
+    </div>
     <div bind:this="{legendElement}" class="card fixed left-1 shadow-xl p-3 ml-7 space-y-2 bg-white items-left">
-      <input type="range" min="0" max="2000" step="25" bind:value={radius} on:input={onRadiusChange} class="range range-secondary m-5" />
       <h2 class="card-title text-sm text-slate-500">Cats</h2>
       <LedgerProfile profilePic = "https://cdn.iconscout.com/icon/premium/png-512-thumb/american-shorthair-1975261-1664591.png?f=avif&w=256" name = "Damir"/>
       <LedgerProfile profilePic = "https://cdn.iconscout.com/icon/premium/png-512-thumb/abyssinnian-cat-1975262-1664592.png?f=avif&w=256" name = "Zhilin"/>

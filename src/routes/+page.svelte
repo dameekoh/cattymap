@@ -3,8 +3,8 @@
     import LogIn from '$lib/LogIn.svelte';
     import { onMount } from 'svelte';
 
-    let login = null;
-  let isLoading = true;
+    let login = true;
+    let isLoading = true;
 
   onMount(async () => {
     // Simulate an asynchronous login check
