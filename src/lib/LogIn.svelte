@@ -151,24 +151,35 @@ function validate_field(field) {
 </script>
 
 <style>
+ .pads{
+  height:5%;
+ }
 
+ .button__container{
+  display: grid;
+
+ }
 </style>
 
 
 
-<div class="card w-96 bg-base-100 shadow-xl">
+<div class="card w-3/4 h-max bg-white shadow-xl">
   <figure><img src="https://media.npr.org/assets/img/2021/08/11/gettyimages-1279899488_wide-f3860ceb0ef19643c335cb34df3fa1de166e2761-s1100-c50.jpg" alt="Image" /></figure>
   <div class="card-body">
     <h2 class="card-title">
       Authentication
     </h2>
     <div>
-      <input type="text" id="email" placeholder="Your email" class="input input-bordered input-secondary w-full max-w-xs" />
-      <input type="text" id="username" placeholder="Your username" class="input input-bordered input-secondary w-full max-w-xs" />
-      <input type="password" id="password" placeholder="Your password" class="input input-bordered input-secondary w-full max-w-xs" />
-    
-        <button class="btn btn-secondary" on:click={register}> Sign up </button>
-        <button class="btn btn-secondary" on:click={login}> Log in </button>
+      <input type="text" id="email" placeholder="Your email" class="input input-bordered input-secondary w-full h-1/2 max-w-xs bg-grey" />
+      <div class="pads"></div>
+      <input type="text" id="username" placeholder="Your username" class="input input-bordered input-secondary w-full h-1/2 max-w-xs bg-grey" />
+      <div class="pads"></div>
+      <input type="password" id="password" placeholder="Your password" class="input input-bordered input-secondary w-full h-1/2 max-w-xs bg-grey" />
+      <div class="pads"></div>
+      
+
+      <button class="btn btn-secondary" on:click={register}> Sign up </button>
+      <button class="btn btn-secondary" on:click={login}> Log in </button>
     </div>
   </div>
 </div>
