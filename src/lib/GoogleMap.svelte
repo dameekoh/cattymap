@@ -297,10 +297,10 @@ function displayRoute(L1, L2) {
     margin-left: 10%;
   } */
 
-  @media (min-width: 375px) {
+  /* @media (min-width: 375px) {
     .map-container {
-      width: 100%;
-      height: 667px;
+      width: 375px;
+      height: 100%;
     }
   }
 
@@ -309,10 +309,9 @@ function displayRoute(L1, L2) {
       width: 100%;
       height: 1062px;
     }
-  }  
+  }   */
 </style>
 
-<div style="height:100%; width: 100%;">
   <div bind:this="{mapElement}" class="map-container">
     <div bind:this="{legendElement}" class="card fixed left-1 shadow-xl p-3 ml-7 space-y-2 bg-white items-left">
       <h2 class="card-title text-sm text-slate-500">Cats</h2>
@@ -321,4 +320,3 @@ function displayRoute(L1, L2) {
       <LedgerProfile profilePic = "https://cdn.iconscout.com/icon/premium/png-512-thumb/nebelung-1975276-1664606.png?f=avif&w=256" name = "Punn" />
     </div>
   </div>
-</div>
