@@ -2,6 +2,7 @@
 import { initializeApp } from "firebase/app";
 import { ref, push, child, get, set, getDatabase, onValue, update } from 'firebase/database';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { createEventDispatcher } from "svelte";
 
 
 const firebaseConfig = {
@@ -18,6 +19,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 const auth = getAuth();
+const dispatch = createEventDispatcher();
 let email, password, username;
 
 function register() {
@@ -57,7 +59,8 @@ function register() {
     set(ref(database, 'users/' + user.uid), user_data);
 
     // DOne
-    alert('User Created!!')
+    alert('User Created!!');
+    dispatch("login", true);
   })
   .catch(function(error) {
     // Firebase will use this to alert of its errors
@@ -87,10 +90,11 @@ function login () {
     const user = userCredential.user;
 
     // Add this user to Firebase Database
-    const database_ref = ref(database)
+    const database_ref = ref(database);
 
     // DOne
-    alert('User Logged In!!')
+    alert('User Logged In!!');
+    dispatch("login", true);
 
   })
   .catch(function(error) {
@@ -143,10 +147,22 @@ function validate_field(field) {
 
 </style>
 
-<div>
-    <input type="text" id="email" placeholder="email">
-    <input type="text" id="username" placeholder="username">
-    <input type="text" id="password" placeholder="password">
-    <button on:click={register}> sign up </button>
-    <button on:click={login}> log in </button>
+
+
+<div class="card w-96 bg-base-100 shadow-xl">
+  <figure><img src="https://media.npr.org/assets/img/2021/08/11/gettyimages-1279899488_wide-f3860ceb0ef19643c335cb34df3fa1de166e2761-s1100-c50.jpg" alt="Image" /></figure>
+  <div class="card-body">
+    <h2 class="card-title">
+      Authentication
+    </h2>
+    <div>
+      <input type="text" id="email" placeholder="Your email" class="input input-bordered input-secondary w-full max-w-xs" />
+      <input type="text" id="username" placeholder="Your username" class="input input-bordered input-secondary w-full max-w-xs" />
+      <input type="text" id="password" placeholder="Your password" class="input input-bordered input-secondary w-full max-w-xs" />
+    
+        <button class="btn btn-secondary" on:click={register}> Sign up </button>
+        <button class="btn btn-secondary" on:click={login}> Log in </button>
+    </div>
+  </div>
 </div>
+

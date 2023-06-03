@@ -3,6 +3,7 @@
   // import catData from './catData.json';
 
 // fire base
+  // import firebase from 'firebase/app';
   import { initializeApp } from "firebase/app";
   import { ref, push, child, get, set, getDatabase, onValue, update } from 'firebase/database';
   import LedgerProfile from './LedgerProfile.svelte';
@@ -311,7 +312,6 @@ function displayRoute(L1, L2) {
   }   */
 </style>
 
-<div style="height:100%; width: 100%;">
   <div bind:this="{mapElement}" class="map-container">
     <div bind:this="{legendElement}" class="card fixed left-1 shadow-xl p-3 ml-7 space-y-2 bg-white items-left">
       <h2 class="card-title text-sm text-slate-500">Cats</h2>
@@ -320,4 +320,3 @@ function displayRoute(L1, L2) {
       <LedgerProfile profilePic = "https://cdn.iconscout.com/icon/premium/png-512-thumb/nebelung-1975276-1664606.png?f=avif&w=256" name = "Punn" />
     </div>
   </div>
-</div>
