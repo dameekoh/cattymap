@@ -42,8 +42,7 @@
 let radius = 1000; 
 
 function onRadiusChange(event){
-  console.log(radius);
-  addCatMarkers();
+  displayCatMarkers();
 }
 
   /**
@@ -215,8 +214,8 @@ function onRadiusChange(event){
 
     // Add the legend to the map
     map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(legendElement);
-    addCatMarkers();
     addUserMarker();
+    addCatMarkers();
     };
     document.head.appendChild(script);
     return () => script.remove();
@@ -227,36 +226,48 @@ function onRadiusChange(event){
   /**
    * Adding cat markers according to the data from database
    */
+  let markers = [];
   async function addCatMarkers() {
     try {
       const catData = await fetchCatPostFromDB();
-      const currentLatLng = new google.maps.LatLng(currentPosition.lat, currentPosition.lng);
     
       for (const [key, cat] of Object.entries(catData)){
-        const catLatLng = new google.maps.LatLng(cat.latitude, cat.longitude);
-        const distance = google.maps.geometry.spherical.computeDistanceBetween(currentLatLng, catLatLng);
+        const marker = new google.maps.Marker({
+          position: { lat: cat.latitude, lng: cat.longitude },
+          icon: {
+            url: cat.avatar,
+            scaledSize: new google.maps.Size(48, 48) // Adjust the size of the icon if needed
+          },
+          title: cat.name
+        });
 
-        if (distance <= radius){
-          const marker = new google.maps.Marker({
-            position: { lat: cat.latitude, lng: cat.longitude },
-            map: map,
-            icon: {
-              url: cat.avatar,
-              scaledSize: new google.maps.Size(48, 48) // Adjust the size of the icon if needed
-            },
-            title: cat.name
-          });
-        }
-      }
         const infoWindow = new google.maps.InfoWindow({
           content: `<h3>${cat.name}</h3>`
         });
+
         marker.addListener('click', () => {
           infoWindow.open(map, marker);
         });
+
+        markers.push(marker);
+      }
+      displayCatMarkers();
     } catch (error) {
       console.error('Error fetching cat data:', error);
     }
+}
+
+function displayCatMarkers(){
+  for (const [key, marker] of Object.entries(markers)){
+    const currentLatLng = new google.maps.LatLng(currentPosition.lat, currentPosition.lng);
+    const catLatLng = marker.getPosition();
+    const distance = google.maps.geometry.spherical.computeDistanceBetween(currentLatLng, catLatLng);
+    if (distance <= radius) {
+      marker.setMap(map);
+    }else {
+      marker.setMap(null);
+    }
+  }
 }
 
 
@@ -357,7 +368,7 @@ function setCurrentPosition(){
   }
 </style>
 
-<input type="range" min="0" max="2000" step="1" bind:value={radius} on:input={onRadiusChange} />
+<input type="range" min="0" max="2000" step="25" bind:value={radius} on:input={onRadiusChange} class="range range-secondary" />
 <!-- Legend -->
 <div bind:this="{mapElement}" class="map-container">
   <div bind:this="{legendElement}" class="card fixed bottom-4 left-4 shadow-xl p-4 ml-7 space-y-4 bg-white items-left">
