@@ -163,7 +163,7 @@
       <h2 class="card-title">
         Authentication
       </h2>
-      <div>
+      <div class="space-y-4">
         <input type="text" id="email" placeholder="Your email" class="input input-bordered input-secondary w-full max-w-xs" />
         <input type="text" id="username" placeholder="Your username" class="input input-bordered input-secondary w-full max-w-xs" />
         <input type="text" id="password" placeholder="Your password" class="input input-bordered input-secondary w-full max-w-xs" />
