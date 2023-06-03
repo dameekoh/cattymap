@@ -20,6 +20,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"firebase": "^9.22.1"
+		"firebase": "^9.22.1",
+		"svelte-range-slider-pips": "^2.1.1"
 	}
 }
