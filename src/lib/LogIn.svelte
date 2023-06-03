@@ -20,7 +20,7 @@
   const auth = getAuth();
   let email, password, username;
   
-  function register() {
+  async function register() {
     // Get all our input fields
     email = document.getElementById('email').value
     password = document.getElementById('password').value
@@ -36,7 +36,13 @@
       alert('Please input the username')
       return
     }
-   
+
+    const snapshot = await get(ref(database, 'users/' + username));
+
+    if (snapshot.exists()){
+      alert("Username already in use. Please create a new one!");
+      return;
+    }
     // Move on with Auth
     createUserWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
@@ -54,7 +60,7 @@
       }
   
       // Push to Firebase Database
-      set(ref(database, 'users/' + user.uid), user_data);
+      set(ref(database, 'users/' + username), user_data);
   
       // DOne
       alert('User Created!!')
@@ -151,8 +157,6 @@
   
   </style>
   
-  
-  
   <div class="card w-96 bg-base-100 shadow-xl">
     <figure><img src="https://media.npr.org/assets/img/2021/08/11/gettyimages-1279899488_wide-f3860ceb0ef19643c335cb34df3fa1de166e2761-s1100-c50.jpg" alt="Image" /></figure>
     <div class="card-body">
@@ -169,4 +173,3 @@
       </div>
     </div>
   </div>
-  
