@@ -1,5 +1,6 @@
 <script>
   import { onMount } from 'svelte';
+  import RangeSlider from "svelte-range-slider-pips";
   // import catData from './catData.json';
 
 // fire base
@@ -28,26 +29,59 @@
   const KAIST = { lat: 36.368865, lng: 127.362103 };
 
   //reference root 
-  const dataRef = ref(database);
+  const dataRef = ref(database, "/");
+  // reference Cat table (postNumber, name, latitude, longitude, avatar, image, likeCount)
+  const catPostRef = ref(database, "Cat");
+  // reference Comment table 
+  const commentRef = ref(database, "Comment");
+  // reference Cat post count 
+  const catPostCountRef = ref(database, "CatCount");
+  let catPostCount;
+  // reference Comment count 
+  const commentCountRef = ref(database, "CommentCount");
+  let commentCount;
 
+let radius = 1000; 
+
+function onRadiusChange(event){
+  displayCatMarkers();
+}
 
   /**
    * function to send data to database  
    * @param {Object} catDataObj
    */
   function sendToDB(catDataObj) {
-    const uniqueKey = catDataObj.postID
-    const dataToUpdate = { [uniqueKey]: {name: catDataObj.name, latitude: catDataObj.lat, longitude: catDataObj.lng,  avatar: catDataObj.avatar}};
-    update(dataRef, dataToUpdate);
+    get(catPostCountRef).then((snapshot) => {
+      catPostCount = snapshot.val();
+      set(catPostCountRef, catPostCount + 1);
+      const uniqueKey = catPostCount;
+      const dataToUpdate = { [uniqueKey]: {name: catDataObj.name, 
+                                         latitude: catDataObj.lat, 
+                                         longitude: catDataObj.lng,  
+                                         avatar: catDataObj.avatar, 
+                                         image: catDataObj.image, 
+                                         likeCount: catDataObj.likeCount}};
+    update(catPostRef, dataToUpdate)
+        .then(() => {
+          addCatMarkers(); // Add cat markers immediately after updating the database
+        })
+        .catch((error) => {
+          console.error('Error updating database:', error);
+        });
+    }).catch((error) => {
+      console.error(error);
+    });
   }
+
 
   /**
    * function to get data from database 
    * @returns {any}
    */
-  function fetchFromDB() {
+  function fetchCatPostFromDB() {
   return new Promise((resolve, reject) => {
-    onValue(dataRef, (snapshot) => {
+    onValue(catPostRef, (snapshot) => {
       const data = snapshot.val();
       resolve(data);
     }, (error) => {
@@ -58,10 +92,10 @@
 
   let map, mapElement, legendElement, boundary, inputName, currentPosition, catWindow;
 
-  onMount(() => {
-    setCurrentPosition();
+  onMount(async () => {
+    await setCurrentPosition();
     const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBEQ0yl78oVx87pxPJd8Jrt-LOp7wPmTLA`;
+    script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBEQ0yl78oVx87pxPJd8Jrt-LOp7wPmTLA&libraries=geometry`;
     script.async = true;
     script.onload = () => {
       map = new google.maps.Map(mapElement, {
@@ -174,18 +208,17 @@
                           :(name == 'Cat Punn') ? ("https://cdn.iconscout.com/icon/premium/png-512-thumb/nebelung-1975276-1664606.png?f=avif&w=256")
                           : (null);
             
-            sendToDB({postID: new Date(), name: name, ...position, avatar: avatar});
+            sendToDB({postID: new Date(), name: name, ...position, avatar: avatar, image: "None", likeCount: 0});
             inputName.close();
-            addCatMarkers();
+            // addCatMarkers();
           }
       });
     });
 
     // Add the legend to the map
     map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(legendElement);
-    
-    addCatMarkers();
     addUserMarker();
+    addCatMarkers();
     };
     document.head.appendChild(script);
     return () => script.remove();
@@ -196,13 +229,14 @@
   /**
    * Adding cat markers according to the data from database
    */
+  let markers = [];
   async function addCatMarkers() {
     try {
-      const catData = await fetchFromDB();
+      const catData = await fetchCatPostFromDB();
+    
       for (const [key, cat] of Object.entries(catData)){
         const marker = new google.maps.Marker({
           position: { lat: cat.latitude, lng: cat.longitude },
-          map: map,
           icon: {
             url: cat.avatar,
             scaledSize: new google.maps.Size(48, 48) // Adjust the size of the icon if needed
@@ -216,14 +250,31 @@
                    '<button class="btn bg-white" id="catRoute">go</button>' +
                    '</div>'
         });
+
         marker.addListener('click', () => {
           inputName?.close();
           catWindow.open(map, marker);
         });
+
+        markers.push(marker);
       }
+      displayCatMarkers();
     } catch (error) {
       console.error('Error fetching cat data:', error);
     }
+}
+
+function displayCatMarkers(){
+  for (const [key, marker] of Object.entries(markers)){
+    const currentLatLng = new google.maps.LatLng(currentPosition.lat, currentPosition.lng);
+    const catLatLng = marker.getPosition();
+    const distance = google.maps.geometry.spherical.computeDistanceBetween(currentLatLng, catLatLng);
+    if (distance <= radius) {
+      marker.setMap(map);
+    }else {
+      marker.setMap(null);
+    }
+  }
 }
 
 
@@ -311,9 +362,9 @@ function displayRoute(L1, L2) {
     }
   }   */
 </style>
-
   <div bind:this="{mapElement}" class="map-container">
     <div bind:this="{legendElement}" class="card fixed left-1 shadow-xl p-3 ml-7 space-y-2 bg-white items-left">
+      <input type="range" min="0" max="2000" step="25" bind:value={radius} on:input={onRadiusChange} class="range range-secondary m-5" />
       <h2 class="card-title text-sm text-slate-500">Cats</h2>
       <LedgerProfile profilePic = "https://cdn.iconscout.com/icon/premium/png-512-thumb/american-shorthair-1975261-1664591.png?f=avif&w=256" name = "Damir"/>
       <LedgerProfile profilePic = "https://cdn.iconscout.com/icon/premium/png-512-thumb/abyssinnian-cat-1975262-1664592.png?f=avif&w=256" name = "Zhilin"/>
