@@ -296,10 +296,10 @@ function displayRoute(L1, L2) {
     margin-left: 10%;
   } */
 
-  @media (min-width: 375px) {
+  /* @media (min-width: 375px) {
     .map-container {
-      width: 100%;
-      height: 667px;
+      width: 375px;
+      height: 100%;
     }
   }
 
@@ -308,7 +308,7 @@ function displayRoute(L1, L2) {
       width: 100%;
       height: 1062px;
     }
-  }  
+  }   */
 </style>
 
 <div style="height:100%; width: 100%;">
