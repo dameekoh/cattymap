@@ -91,10 +91,10 @@ function onRadiusChange(event){
 
   let map, mapElement, legendElement, boundary, inputName, currentPosition;
 
-  onMount(() => {
-    setCurrentPosition();
+  onMount(async () => {
+    await setCurrentPosition();
     const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBEQ0yl78oVx87pxPJd8Jrt-LOp7wPmTLA`;
+    script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBEQ0yl78oVx87pxPJd8Jrt-LOp7wPmTLA&libraries=geometry`;
     script.async = true;
     script.onload = () => {
       map = new google.maps.Map(mapElement, {
@@ -247,13 +247,13 @@ function onRadiusChange(event){
             title: cat.name
           });
         }
+      }
         const infoWindow = new google.maps.InfoWindow({
           content: `<h3>${cat.name}</h3>`
         });
         marker.addListener('click', () => {
           infoWindow.open(map, marker);
         });
-      }
     } catch (error) {
       console.error('Error fetching cat data:', error);
     }
