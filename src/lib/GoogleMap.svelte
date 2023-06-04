@@ -251,18 +251,21 @@ function onRadiusChange(event){
     
     map.controls[google.maps.ControlPosition.LEFT_TOP].push(slider);
     addUserMarker();
+    setMapCenter();
     setCurrentPosition();
     addCatMarkers();
     };
+
+    setInterval(() => {
+      setCurrentPosition();
+      console.log("here");
+    }, 1000);
+
     document.head.appendChild(script);
     return () => script.remove();
   });
 
 
-  setInterval(() => {
-    setCurrentPosition();
-  }, 1000);
-  
   /**
    * Adding cat markers according to the data from database
    */
@@ -352,12 +355,28 @@ async function setCurrentPosition(){
           userMarker.setMap(map);
           userMarker.setPosition(currentPosition);
           range.setCenter(currentPosition);
-          map.setCenter(currentPosition);
         }
       );
      
   } else {
     return null
+  }
+}
+
+async function setMapCenter(){
+  if (navigator.geolocation) {
+      await navigator.geolocation.getCurrentPosition(
+        (position) => {
+          currentPosition = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          };
+          map.setCenter(currentPosition);
+        }
+      );
+     
+  } else {
+    map.setCenter(KAIST);
   }
 }
 
