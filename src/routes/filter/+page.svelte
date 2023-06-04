@@ -82,20 +82,52 @@
 
 <div class="filters-container">
   <div class="filter-card">
-    <img src="{fileUrl}" alt="Filter 1977" class="image _1977" on:click={() => selectedFilter = '_1977'} />
+    <img src="{fileUrl}" alt="1977" class="image _1977" on:click={() => selectedFilter = '_1977'} />
     <h2>1977</h2>
   </div>
   <div class="filter-card">
-    <img src="{fileUrl}" alt="Filter Gingham" class="image gingham" on:click={() => selectedFilter = 'gingham'} />
+    <img src="{fileUrl}" alt="gingham" class="image gingham" on:click={() => selectedFilter = 'gingham'} />
     <h2>Gingham</h2>
   </div>
   <div class="filter-card">
-    <img src="{fileUrl}" alt="Filter Lo-Fi" class="image lofi" on:click={() => selectedFilter = 'lofi'} />
+    <img src="{fileUrl}" alt="Lo-Fi" class="image lofi" on:click={() => selectedFilter = 'lofi'} />
     <h2>Lo-Fi</h2>
   </div>
   <div class="filter-card">
-    <img src="{fileUrl}" alt="Rise" class="image rise" on:click={() => selectedFilter = 'rise'} />
+    <img src="{fileUrl}" alt="hudson" class="image hudson" on:click={() => selectedFilter = 'hudson'} />
+    <h2>Hudson</h2>
+  </div>
+  <div class="filter-card">
+    <img src="{fileUrl}" alt="kelvin" class="image kelvin" on:click={() => selectedFilter = 'kelvin'} />
+    <h2>Kelvin</h2>
+  </div>
+  <div class="filter-card">
+    <img src="{fileUrl}" alt="xpro2" class="image xpro2" on:click={() => selectedFilter = 'xpro2'} />
+    <h2>X-Pro II</h2>
+  </div>
+  <div class="filter-card">
+    <img src="{fileUrl}" alt="rise" class="image rise" on:click={() => selectedFilter = 'rise'} />
     <h2>Rise</h2>
+  </div>
+  <div class="filter-card">
+    <img src="{fileUrl}" alt="perpetua" class="image perpetua" on:click={() => selectedFilter = 'perpetua'} />
+    <h2>Perpetua</h2>
+  </div>
+  <div class="filter-card">
+    <img src="{fileUrl}" alt="toaster" class="image toaster" on:click={() => selectedFilter = 'toaster'} />
+    <h2>Toaster</h2>
+  </div>
+  <div class="filter-card">
+    <img src="{fileUrl}" alt="earlybird" class="image earlybird" on:click={() => selectedFilter = 'earlybird'} />
+    <h2>Early Bird</h2>
+  </div>
+  <div class="filter-card">
+    <img src="{fileUrl}" alt="brooklyn" class="image brooklyn" on:click={() => selectedFilter = 'brooklyn'} />
+    <h2>Brooklyn</h2>
+  </div>
+  <div class="filter-card">
+    <img src="{fileUrl}" alt="willow" class="image willow" on:click={() => selectedFilter = 'willow'} />
+    <h2>Willow</h2>
   </div>
 </div>
 
