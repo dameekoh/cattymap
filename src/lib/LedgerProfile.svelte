@@ -44,7 +44,7 @@
 
 <div class="ledgerSection">
     <div class="profile-pic-container">
-        <img class="profile-pic" src={avatar} />
+        <img class="profile-pic" src={avatar} alt=""/>
     </div>
 
     <div class="name"> {name} </div>
