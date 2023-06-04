@@ -389,10 +389,6 @@ async function handleFileChange(event) {
     width: 70%;
   }
 
-  /* .camera{
-    padding: 0.75rem;
-  } */
-
   .ledger__scroll{
     overflow-x: visible;
     overflow-y: auto;
