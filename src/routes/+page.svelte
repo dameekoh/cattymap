@@ -1,6 +1,7 @@
 <script>
     import GoogleMap from '$lib/GoogleMap.svelte';
     import LogIn from '$lib/LogIn.svelte';
+    import PostPic from '../lib/PostPic.svelte';
     import { onMount } from 'svelte';
 
     let login = true;
@@ -31,7 +32,7 @@
     </h1>
   </div>
   <div class="app__container">
-    <GoogleMap />
+    <PostPic />
   </div>
 
 {:else}

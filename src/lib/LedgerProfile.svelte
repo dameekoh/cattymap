@@ -1,6 +1,7 @@
 <script>
     export let profilePic = "https://cdn.iconscout.com/icon/premium/png-512-thumb/american-shorthair-1975261-1664591.png?f=avif&w=256";
     export let name = "no name cat";
+    export let checked = true; 
 </script>
 
 <style>
@@ -48,7 +49,11 @@
     <div class="name"> {name} </div>
     <div class="form-control justify-self-end">
         <label class="cursor-pointer label">
-            <input type="checkbox" checked="checked" class="checkbox checkbox-secondary" />
+            {#if checked}
+                <input type="checkbox" checked class="checkbox checkbox-secondary" />
+            {:else}
+                <input type="checkbox" class="checkbox checkbox-secondary" />
+            {/if}
         </label>
     </div>
 </div>
