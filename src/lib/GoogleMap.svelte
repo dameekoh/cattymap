@@ -38,17 +38,14 @@
   // reference Comment count 
   const commentCountRef = ref(database, "CommentCount");
   let commentCount;
+  const catProfileRef = ref(database, "CatProfile");
+  // reference CatProfile count 
+  const catProfileCountRef = ref(database, "CatProfileCount");
+  let catProfileCount;
 
   let radius = 1000;
+  let catProfiles = [];
 
-  const catProfiles = [
-    {name: "Damir",
-    avatar: "https://cdn.iconscout.com/icon/premium/png-512-thumb/american-shorthair-1975261-1664591.png?f=avif&w=256"},
-    {name: "Zhilin",
-    avatar: "https://cdn.iconscout.com/icon/premium/png-512-thumb/abyssinnian-cat-1975262-1664592.png?f=avif&w=256"},
-    {name: "Punn",
-    avatar: "https://cdn.iconscout.com/icon/premium/png-512-thumb/nebelung-1975276-1664606.png?f=avif&w=256"},
-  ] 
 
 function onRadiusChange(event){
   displayCatMarkers();
@@ -87,20 +84,31 @@ function onRadiusChange(event){
    * @returns {any}
    */
   function fetchCatPostFromDB() {
-  return new Promise((resolve, reject) => {
-    onValue(catPostRef, (snapshot) => {
-      const data = snapshot.val();
-      resolve(data);
-    }, (error) => {
-      reject(error);
+    return new Promise((resolve, reject) => {
+      onValue(catPostRef, (snapshot) => {
+        const data = snapshot.val();
+        resolve(data);
+      }, (error) => {
+        reject(error);
+      });
     });
-  });
-}
+  }
 
+  function fetchCatProfileFromDB() {
+    return new Promise((resolve, reject) => {
+      onValue(catProfileRef, (snapshot) => {
+        const data = snapshot.val();
+        resolve(data);
+      }, (error) => {
+        reject(error);
+      });
+    });
+  }
   let map, mapElement, legendElement, newPostElement, slider, boundary, inputName, currentPosition, catWindow, range;
   
 
   onMount(async () => {
+    catProfiles = await fetchCatProfileFromDB();
     const script = document.createElement('script');
     script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBEQ0yl78oVx87pxPJd8Jrt-LOp7wPmTLA&libraries=geometry`;
     script.async = true;
@@ -413,25 +421,25 @@ function newPost() {
 
 </style>
 
-  <div bind:this="{mapElement}" class="map-container">
-    <div bind:this="{newPostElement}" class="mr-3 mb-5">
-      <button class="btn btn-active btn-secondary" on:click="{newPost}">Post</button>
+<div bind:this="{mapElement}" class="map-container">
+  <div bind:this="{newPostElement}" class="mr-3 mb-5">
+    <button class="btn btn-active btn-secondary" on:click="{newPost}">Post</button>
 
-    </div>
+  </div>
 
 
-    <div bind:this="{slider}" class="slider">
-      <input type="range" min="0" max="2000" step="25" bind:value={radius} on:input={onRadiusChange} class="range range-secondary" />
-    </div>
+  <div bind:this="{slider}" class="slider">
+    <input type="range" min="0" max="2000" step="25" bind:value={radius} on:input={onRadiusChange} class="range range-secondary" />
+  </div>
 
-    <div bind:this="{legendElement}" class="card fixed left-1 shadow-xl p-3 ml-7 space-y-2 bg-white items-left overflow-x-visible">
-      <h2 class="card-title text-sm text-slate-500">Cats</h2>
-      <div class="container">
-        <div class="ledger__scroll">
-          {#each catProfiles as { name, avatar }}
-            <LedgerProfile avatar = { avatar } name = { name }/>
-          {/each}
-        </div>
+  <div bind:this="{legendElement}" class="card fixed left-1 shadow-xl p-3 ml-7 space-y-2 bg-white items-left overflow-x-visible">
+    <h2 class="card-title text-sm text-slate-500">Cats</h2>
+    <div class="container">
+      <div class="ledger__scroll">
+        {#each catProfiles as { name, avatar }}
+          <LedgerProfile avatar = { avatar } name = { name }/>
+        {/each}
       </div>
     </div>
   </div>
+</div>
