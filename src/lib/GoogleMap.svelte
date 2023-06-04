@@ -312,9 +312,10 @@ function setCurrentPosition(){
           };
         }
       );
-    } else {
-      return null
-    }
+      addUserMarker();
+  } else {
+    return null
+  }
 }
 
 function displayRoute(L1, L2) {
@@ -357,7 +358,7 @@ function openCamera() {
   }
 
   .camera{
-    padding: 5%;
+    padding: 0.75rem;
   }
   /* Legend styles */
   /* .legend {
@@ -384,19 +385,6 @@ function openCamera() {
     margin-left: 10%;
   } */
 
-  /* @media (min-width: 375px) {
-    .map-container {
-      width: 375px;
-      height: 100%;
-    }
-  }
-
-  @media (min-width: 1787px) {
-    .map-container {
-      width: 100%;
-      height: 1062px;
-    }
-  }   */
 </style>
 
   <div bind:this="{mapElement}" class="map-container">
