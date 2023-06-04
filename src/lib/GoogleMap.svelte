@@ -3,11 +3,14 @@
   import RangeSlider from "svelte-range-slider-pips";
 
 // fire base
+
   import { initializeApp } from "firebase/app";
   import { ref, push, child, get, set, getDatabase, onValue, update } from 'firebase/database';
   import LedgerProfile from './LedgerProfile.svelte';
   import markerIcon from "../images/marker.png";
   import { goto } from '$app/navigation';
+  import { selectedFile } from '../stores/image';
+
 
   const firebaseConfig = {
   apiKey: "AIzaSyBEQ0yl78oVx87pxPJd8Jrt-LOp7wPmTLA",
@@ -350,12 +353,21 @@ function displayRoute(L1, L2) {
 
 }
 
-
-
 function newPost() {
   goto('new_post')
 }
 
+function chooseFile() {
+    const fileInput = document.getElementById('fileInput');
+    fileInput.click();
+  }
+
+//Post
+async function handleFileChange(event) {
+  const file = event.target.files[0];
+  selectedFile.set(file);
+  await goto('filter');
+}
 </script>
 
 <style>
@@ -386,6 +398,20 @@ function newPost() {
     overflow-y: auto;
     height: 20vh;
   }
+  .file-label {
+      /* Style the label to resemble a button */
+      display: inline-block;
+      padding: 6px 12px;
+      background-color: #f0f0f0;
+      color: #333;
+      border: 1px solid #ccc;
+      cursor: pointer;
+    }
+  
+    .file-label input[type="file"] {
+      /* Hide the default file input */
+      display: none;
+    }
 
   /* Legend styles */
   /* .legend {
@@ -423,8 +449,8 @@ function newPost() {
 
 <div bind:this="{mapElement}" class="map-container">
   <div bind:this="{newPostElement}" class="mr-3 mb-5">
-    <button class="btn btn-active btn-secondary" on:click="{newPost}">Post</button>
-
+    <button class="btn btn-active btn-secondary" on:click={chooseFile}> Choose File</button>
+    <input type="file" id="fileInput" name="image" accept="image/*" style="display: none;" on:change={handleFileChange}>
   </div>
 
 
