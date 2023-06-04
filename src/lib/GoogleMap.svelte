@@ -1,10 +1,8 @@
 <script>
   import { onMount } from 'svelte';
   import RangeSlider from "svelte-range-slider-pips";
-  // import catData from './catData.json';
 
 // fire base
-  // import firebase from 'firebase/app';
   import { initializeApp } from "firebase/app";
   import { ref, push, child, get, set, getDatabase, onValue, update } from 'firebase/database';
   import LedgerProfile from './LedgerProfile.svelte';
@@ -41,7 +39,16 @@
   const commentCountRef = ref(database, "CommentCount");
   let commentCount;
 
-let radius = 1000; 
+  let radius = 1000;
+
+  const catProfiles = [
+    {name: "Damir",
+    avatar: "https://cdn.iconscout.com/icon/premium/png-512-thumb/american-shorthair-1975261-1664591.png?f=avif&w=256"},
+    {name: "Zhilin",
+    avatar: "https://cdn.iconscout.com/icon/premium/png-512-thumb/abyssinnian-cat-1975262-1664592.png?f=avif&w=256"},
+    {name: "Punn",
+    avatar: "https://cdn.iconscout.com/icon/premium/png-512-thumb/nebelung-1975276-1664606.png?f=avif&w=256"},
+  ] 
 
 function onRadiusChange(event){
   displayCatMarkers();
@@ -346,6 +353,12 @@ function openCamera() {
 </script>
 
 <style>
+  * { 
+    -moz-box-sizing: border-box; 
+    -webkit-box-sizing: border-box; 
+     box-sizing: border-box; 
+  }
+  
   .map-container {
     width: 100%;
     height: 100%;
@@ -358,9 +371,16 @@ function openCamera() {
     width: 70%;
   }
 
-  .camera{
+  /* .camera{
     padding: 0.75rem;
+  } */
+
+  .ledger__scroll{
+    overflow-x: visible;
+    overflow-y: auto;
+    height: 20vh;
   }
+
   /* Legend styles */
   /* .legend {
     background-color: rgba(255, 255, 255, 0.8);
@@ -389,16 +409,21 @@ function openCamera() {
 </style>
 
   <div bind:this="{mapElement}" class="map-container">
-    <div bind:this="{cameraElement}" class="camera">
+    <div bind:this="{cameraElement}" class="mr-3 mb-5">
       <button class="btn btn-active btn-secondary" on:click="{openCamera}">Camera</button>
     </div>
     <div bind:this="{slider}" class="slider">
       <input type="range" min="0" max="2000" step="25" bind:value={radius} on:input={onRadiusChange} class="range range-secondary" />
     </div>
-    <div bind:this="{legendElement}" class="card fixed left-1 shadow-xl p-3 ml-7 space-y-2 bg-white items-left">
+
+    <div bind:this="{legendElement}" class="card fixed left-1 shadow-xl p-3 ml-7 space-y-2 bg-white items-left overflow-x-visible">
       <h2 class="card-title text-sm text-slate-500">Cats</h2>
-      <LedgerProfile profilePic = "https://cdn.iconscout.com/icon/premium/png-512-thumb/american-shorthair-1975261-1664591.png?f=avif&w=256" name = "Damir"/>
-      <LedgerProfile profilePic = "https://cdn.iconscout.com/icon/premium/png-512-thumb/abyssinnian-cat-1975262-1664592.png?f=avif&w=256" name = "Zhilin"/>
-      <LedgerProfile profilePic = "https://cdn.iconscout.com/icon/premium/png-512-thumb/nebelung-1975276-1664606.png?f=avif&w=256" name = "Punn" />
+      <div class="container">
+        <div class="ledger__scroll">
+          {#each catProfiles as { name, avatar }}
+            <LedgerProfile profilePic = { avatar } name = { name }/>
+          {/each}
+        </div>
+      </div>
     </div>
   </div>

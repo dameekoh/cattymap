@@ -9,6 +9,8 @@
         gap: 2px;
         grid-template-columns: repeat(3, 45px);
         justify-items: start;
+        padding-bottom: 5%;
+        height: 33.33%;
     }
 
     .profile-pic-container {
@@ -17,6 +19,9 @@
         position: relative;
         background-color: #fce4e3;
         box-shadow: 0px 0px 3.5px #e5b4b3;
+        margin-left: 5%;
+        margin-top: 5%;
+        height: 100%;
     }
 
     .profile-pic {
@@ -36,11 +41,10 @@
 </style>
 
 <div class="ledgerSection">
-    <div class="avatar"> 
-        <div class="profile-pic-container">
-            <img class="profile-pic" src={profilePic} />
-          </div>
+    <div class="profile-pic-container">
+        <img class="profile-pic" src={profilePic} />
     </div>
+
     <div class="name"> {name} </div>
     <div class="form-control justify-self-end">
         <label class="cursor-pointer label">
