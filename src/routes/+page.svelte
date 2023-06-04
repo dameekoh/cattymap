@@ -38,16 +38,6 @@
 {/if}
 
 <style>
-  .app__header{
-    height: 7vh;
-    display: flex;
-    justify-items: start;
-    align-items: center;
-    padding: 5%;
-    background-color: white;
-    box-shadow: 0px 0px 10px grey;
-  }
-
   .login__container{
     display: flex;
     height: 100%;
