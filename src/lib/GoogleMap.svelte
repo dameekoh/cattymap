@@ -422,8 +422,15 @@ function openCamera() {
 
   <div bind:this="{mapElement}" class="map-container">
     <div bind:this="{cameraElement}" class="mr-3 mb-5">
-      <button class="btn btn-active btn-secondary" on:click="{openCamera}">Camera</button>
+      <!-- <button class="btn btn-active btn-secondary" on:click="{openCamera}">Camera</button> -->
+
+      <form action="server.cgi" method="post" enctype="multipart/form-data" class="file-input w-full max-w-xs">
+        <input type="file" name="image" accept="image/*" capture="user" class="file-input file-input-bordered file-input-secondary w-full max-w-xs" />
+        <input type="submit" value="Upload">
+      </form>
     </div>
+
+
     <div bind:this="{slider}" class="slider">
       <input type="range" min="0" max="2000" step="25" bind:value={radius} on:input={onRadiusChange} class="range range-secondary" />
     </div>
