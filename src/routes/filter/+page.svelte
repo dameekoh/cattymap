@@ -14,8 +14,8 @@
 
   .filter-card {
     flex: 0 0 auto;
-    width: 30vw; /* Adjust the width as needed */
-    height: 30vh; /* Adjust the height as needed */
+    width: 25vw; /* Adjust the width as needed */
+    height: 25vh; /* Adjust the height as needed */
     margin-right: 1em;
   }
 
