@@ -117,7 +117,9 @@ function onRadiusChange(event){
       currentPosition, 
       catWindow, 
       userMarker,
-      range;
+      range,
+      directionsService,
+      directionsRenderer;
   
 
   onMount(async () => {
@@ -172,6 +174,9 @@ function onRadiusChange(event){
           ]
         }
       });
+
+    directionsService = new google.maps.DirectionsService();
+    directionsRenderer = new google.maps.DirectionsRenderer();
 
     //set boundaries for KAIST
     boundary = new google.maps.LatLngBounds(
@@ -258,8 +263,7 @@ function onRadiusChange(event){
 
     setInterval(() => {
       setCurrentPosition();
-      console.log("here");
-    }, 1000);
+    }, 500);
 
     document.head.appendChild(script);
     return () => script.remove();
@@ -290,6 +294,18 @@ function onRadiusChange(event){
                    '<div class="flex content-center item-center p-4">' +
                    '<button class="btn bg-white" id="catRoute">go</button>' +
                    '</div>'
+        });
+
+        //listen to the input
+        google.maps.event.addListener(catWindow, 'domready', function () {
+            const catRoute = document.getElementById('catRoute');
+
+            catRoute.onclick = function() {
+              const L2 = marker.getPosition();
+              console.log(L2);
+              displayRoute(currentPosition, L2);
+              catWindow.close();
+            }
         });
 
         marker.addListener('click', () => {
@@ -381,6 +397,20 @@ async function setMapCenter(){
 }
 
 function displayRoute(L1, L2) {
+
+  const request = {
+  origin: L1,
+  destination: L2,
+  travelMode: 'BICYCLING',
+  unitSystem: google.maps.UnitSystem.IMPERIAL
+  }
+
+  directionsService.route(request, function(result, status) {
+    console.log(status);
+    if (status == 'OK') {
+      directionsRenderer.setDirections(result);
+    }
+  });
 
 }
 
