@@ -449,7 +449,7 @@ async function handleFileChange(event) {
 
 <div bind:this="{mapElement}" class="map-container">
   <div bind:this="{newPostElement}" class="mr-3 mb-5">
-    <button class="btn btn-active btn-secondary" on:click={chooseFile}> Choose File</button>
+    <button class="btn btn-active btn-secondary" on:click={chooseFile}>Post</button>
     <input type="file" id="fileInput" name="image" accept="image/*" style="display: none;" on:change={handleFileChange}>
   </div>
 
