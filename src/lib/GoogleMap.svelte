@@ -98,7 +98,7 @@ function onRadiusChange(event){
     script.async = true;
     script.onload = () => {
       map = new google.maps.Map(mapElement, {
-        center: (currentPosition) ? (currentPosition) : KAIST,
+        center: KAIST,
         zoom: 16,
         minZoom: 15,
         maxZoom: 20,
@@ -310,6 +310,7 @@ async function setCurrentPosition(){
             lng: position.coords.longitude,
           };
           addUserMarker();
+          map.setCenter(currentPosition);
         }
       );
      
