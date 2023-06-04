@@ -7,7 +7,7 @@
   import { ref, push, child, get, set, getDatabase, onValue, update } from 'firebase/database';
   import LedgerProfile from './LedgerProfile.svelte';
   import markerIcon from "../images/marker.png";
-
+  import { goto } from '$app/navigation';
 
   const firebaseConfig = {
   apiKey: "AIzaSyBEQ0yl78oVx87pxPJd8Jrt-LOp7wPmTLA",
@@ -47,9 +47,10 @@
   let catProfiles = [];
 
 
-  function onRadiusChange(event){
-    displayCatMarkers();
-  }
+function onRadiusChange(event){
+  displayCatMarkers();
+  range.setRadius(radius)
+}
 
   /**
    * function to send data to database  
@@ -232,7 +233,7 @@
     // Add the legend to the map
     map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(legendElement);
     // Add map
-    map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(cameraElement);
+    map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(newPostElement);
 
     
     map.controls[google.maps.ControlPosition.LEFT_TOP].push(slider);
@@ -311,6 +312,17 @@ function addUserMarker(){
           scaledSize: new google.maps.Size(36, 36)
         }
   })
+
+  range = new google.maps.Circle({
+    strokeColor: "#8380f9",
+    strokeOpacity: 1,
+    strokeWeight: 2,
+    fillColor: "#8380f9",
+    fillOpacity: 0.20,
+    map,
+    center: currentPosition,
+    radius: radius,
+  })
 }
 
 /**
@@ -340,23 +352,9 @@ function displayRoute(L1, L2) {
 
 
 
-function openCamera() {
-  // Check if the device supports the getUserMedia API
-  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-    // Open the camera
-    navigator.mediaDevices.getUserMedia({ video: true })
-      .then((stream) => {
-        // Camera access granted, do something with the stream if needed
-      })
-      .catch((error) => {
-        // Handle camera access denied or other errors
-        console.error('Error accessing camera:', error);
-      });
-  } else {
-    console.error('getUserMedia API is not supported on this device.');
-  }
+function newPost() {
+  goto('new_post')
 }
-
 
 </script>
 
@@ -414,12 +412,22 @@ function openCamera() {
     margin-left: 10%;
   } */
 
+  .file-input {
+    display: block;
+    width: 100%;
+    max-width: 300px; /* Adjust the maximum width as needed */
+    margin: 0 auto;
+  }
+
 </style>
 
   <div bind:this="{mapElement}" class="map-container">
-    <div bind:this="{cameraElement}" class="mr-3 mb-5">
-      <button class="btn btn-active btn-secondary" on:click="{openCamera}">Camera</button>
+    <div bind:this="{newPostElement}" class="mr-3 mb-5">
+      <button class="btn btn-active btn-secondary" on:click="{newPost}">Post</button>
+
     </div>
+
+
     <div bind:this="{slider}" class="slider">
       <input type="range" min="0" max="2000" step="25" bind:value={radius} on:input={onRadiusChange} class="range range-secondary" />
     </div>
@@ -429,7 +437,7 @@ function openCamera() {
       <div class="container">
         <div class="ledger__scroll">
           {#each catProfiles as { name, avatar }}
-            <LedgerProfile profilePic = { avatar } name = { name }/>
+            <LedgerProfile avatar = { avatar } name = { name }/>
           {/each}
         </div>
       </div>
