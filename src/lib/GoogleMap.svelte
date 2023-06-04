@@ -38,21 +38,18 @@
   // reference Comment count 
   const commentCountRef = ref(database, "CommentCount");
   let commentCount;
+  const catProfileRef = ref(database, "CatProfile");
+  // reference CatProfile count 
+  const catProfileCountRef = ref(database, "CatProfileCount");
+  let catProfileCount;
 
   let radius = 1000;
+  let catProfiles = [];
 
-  const catProfiles = [
-    {name: "Damir",
-    avatar: "https://cdn.iconscout.com/icon/premium/png-512-thumb/american-shorthair-1975261-1664591.png?f=avif&w=256"},
-    {name: "Zhilin",
-    avatar: "https://cdn.iconscout.com/icon/premium/png-512-thumb/abyssinnian-cat-1975262-1664592.png?f=avif&w=256"},
-    {name: "Punn",
-    avatar: "https://cdn.iconscout.com/icon/premium/png-512-thumb/nebelung-1975276-1664606.png?f=avif&w=256"},
-  ] 
 
-function onRadiusChange(event){
-  displayCatMarkers();
-}
+  function onRadiusChange(event){
+    displayCatMarkers();
+  }
 
   /**
    * function to send data to database  
@@ -86,20 +83,31 @@ function onRadiusChange(event){
    * @returns {any}
    */
   function fetchCatPostFromDB() {
-  return new Promise((resolve, reject) => {
-    onValue(catPostRef, (snapshot) => {
-      const data = snapshot.val();
-      resolve(data);
-    }, (error) => {
-      reject(error);
+    return new Promise((resolve, reject) => {
+      onValue(catPostRef, (snapshot) => {
+        const data = snapshot.val();
+        resolve(data);
+      }, (error) => {
+        reject(error);
+      });
     });
-  });
-}
+  }
 
+  function fetchCatProfileFromDB() {
+    return new Promise((resolve, reject) => {
+      onValue(catProfileRef, (snapshot) => {
+        const data = snapshot.val();
+        resolve(data);
+      }, (error) => {
+        reject(error);
+      });
+    });
+  }
   let map, mapElement, legendElement, cameraElement, slider, boundary, inputName, currentPosition, catWindow;
   
 
   onMount(async () => {
+    catProfiles = await fetchCatProfileFromDB();
     const script = document.createElement('script');
     script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBEQ0yl78oVx87pxPJd8Jrt-LOp7wPmTLA&libraries=geometry`;
     script.async = true;

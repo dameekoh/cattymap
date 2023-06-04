@@ -32,7 +32,7 @@
     </h1>
   </div>
   <div class="app__container">
-    <PostPic />
+    <GoogleMap />
   </div>
 
 {:else}

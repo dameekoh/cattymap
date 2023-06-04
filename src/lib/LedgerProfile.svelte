@@ -37,6 +37,7 @@
     .name {
         align-self: center;
         justify-self: start;
+        white-space: nowrap;
     }
 
 </style>
