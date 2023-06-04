@@ -1,7 +1,7 @@
 <script>
     import GoogleMap from '$lib/GoogleMap.svelte';
     import LogIn from '$lib/LogIn.svelte';
-    import PostPic from '../lib/PostPic.svelte';
+    import PostPic from '../lib/PostStorageandDB.svelte';
     import { onMount } from 'svelte';
 
     let login = true;
