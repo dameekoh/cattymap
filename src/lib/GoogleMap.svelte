@@ -3,10 +3,13 @@
   import RangeSlider from "svelte-range-slider-pips";
 
 // fire base
+
   import { initializeApp } from "firebase/app";
   import { ref, push, child, get, set, getDatabase, onValue, update } from 'firebase/database';
   import LedgerProfile from './LedgerProfile.svelte';
   import markerIcon from "../images/marker.png";
+  import { goto } from '$app/navigation';
+  import { selectedFile } from '../stores/image';
 
 
   const firebaseConfig = {
@@ -38,17 +41,14 @@
   // reference Comment count 
   const commentCountRef = ref(database, "CommentCount");
   let commentCount;
+  const catProfileRef = ref(database, "CatProfile");
+  // reference CatProfile count 
+  const catProfileCountRef = ref(database, "CatProfileCount");
+  let catProfileCount;
 
   let radius = 1000;
+  let catProfiles = [];
 
-  const catProfiles = [
-    {name: "Damir",
-    avatar: "https://cdn.iconscout.com/icon/premium/png-512-thumb/american-shorthair-1975261-1664591.png?f=avif&w=256"},
-    {name: "Zhilin",
-    avatar: "https://cdn.iconscout.com/icon/premium/png-512-thumb/abyssinnian-cat-1975262-1664592.png?f=avif&w=256"},
-    {name: "Punn",
-    avatar: "https://cdn.iconscout.com/icon/premium/png-512-thumb/nebelung-1975276-1664606.png?f=avif&w=256"},
-  ] 
 
 function onRadiusChange(event){
   displayCatMarkers();
@@ -87,20 +87,31 @@ function onRadiusChange(event){
    * @returns {any}
    */
   function fetchCatPostFromDB() {
-  return new Promise((resolve, reject) => {
-    onValue(catPostRef, (snapshot) => {
-      const data = snapshot.val();
-      resolve(data);
-    }, (error) => {
-      reject(error);
+    return new Promise((resolve, reject) => {
+      onValue(catPostRef, (snapshot) => {
+        const data = snapshot.val();
+        resolve(data);
+      }, (error) => {
+        reject(error);
+      });
     });
-  });
-}
+  }
 
-  let map, mapElement, legendElement, cameraElement, slider, boundary, inputName, currentPosition, catWindow, range;
+  function fetchCatProfileFromDB() {
+    return new Promise((resolve, reject) => {
+      onValue(catProfileRef, (snapshot) => {
+        const data = snapshot.val();
+        resolve(data);
+      }, (error) => {
+        reject(error);
+      });
+    });
+  }
+  let map, mapElement, legendElement, newPostElement, slider, boundary, inputName, currentPosition, catWindow, range;
   
 
   onMount(async () => {
+    catProfiles = await fetchCatProfileFromDB();
     const script = document.createElement('script');
     script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBEQ0yl78oVx87pxPJd8Jrt-LOp7wPmTLA&libraries=geometry`;
     script.async = true;
@@ -225,7 +236,7 @@ function onRadiusChange(event){
     // Add the legend to the map
     map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(legendElement);
     // Add map
-    map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(cameraElement);
+    map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(newPostElement);
 
     
     map.controls[google.maps.ControlPosition.LEFT_TOP].push(slider);
@@ -342,26 +353,21 @@ function displayRoute(L1, L2) {
 
 }
 
-
-
-function openCamera() {
-  // Check if the device supports the getUserMedia API
-  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-    // Open the camera
-    navigator.mediaDevices.getUserMedia({ video: true })
-      .then((stream) => {
-        // Camera access granted, do something with the stream if needed
-      })
-      .catch((error) => {
-        // Handle camera access denied or other errors
-        console.error('Error accessing camera:', error);
-      });
-  } else {
-    console.error('getUserMedia API is not supported on this device.');
-  }
+function newPost() {
+  goto('new_post')
 }
 
+function chooseFile() {
+    const fileInput = document.getElementById('fileInput');
+    fileInput.click();
+  }
 
+//Post
+async function handleFileChange(event) {
+  const file = event.target.files[0];
+  selectedFile.set(file);
+  await goto('filter');
+}
 </script>
 
 <style>
@@ -392,6 +398,20 @@ function openCamera() {
     overflow-y: auto;
     height: 20vh;
   }
+  .file-label {
+      /* Style the label to resemble a button */
+      display: inline-block;
+      padding: 6px 12px;
+      background-color: #f0f0f0;
+      color: #333;
+      border: 1px solid #ccc;
+      cursor: pointer;
+    }
+  
+    .file-label input[type="file"] {
+      /* Hide the default file input */
+      display: none;
+    }
 
   /* Legend styles */
   /* .legend {
@@ -418,31 +438,34 @@ function openCamera() {
     margin-left: 10%;
   } */
 
+  .file-input {
+    display: block;
+    width: 100%;
+    max-width: 300px; /* Adjust the maximum width as needed */
+    margin: 0 auto;
+  }
+
 </style>
 
-  <div bind:this="{mapElement}" class="map-container">
-    <div bind:this="{cameraElement}" class="mr-3 mb-5">
-      <!-- <button class="btn btn-active btn-secondary" on:click="{openCamera}">Camera</button> -->
-
-      <form action="server.cgi" method="post" enctype="multipart/form-data" class="file-input w-full max-w-xs">
-        <input type="file" name="image" accept="image/*" capture="user" class="file-input file-input-bordered file-input-secondary w-full max-w-xs" />
-        <input type="submit" value="Upload">
-      </form>
-    </div>
+<div bind:this="{mapElement}" class="map-container">
+  <div bind:this="{newPostElement}" class="mr-3 mb-5">
+    <button class="btn btn-active btn-secondary" on:click={chooseFile}> Choose File</button>
+    <input type="file" id="fileInput" name="image" accept="image/*" style="display: none;" on:change={handleFileChange}>
+  </div>
 
 
-    <div bind:this="{slider}" class="slider">
-      <input type="range" min="0" max="2000" step="25" bind:value={radius} on:input={onRadiusChange} class="range range-secondary" />
-    </div>
+  <div bind:this="{slider}" class="slider">
+    <input type="range" min="0" max="2000" step="25" bind:value={radius} on:input={onRadiusChange} class="range range-secondary" />
+  </div>
 
-    <div bind:this="{legendElement}" class="card fixed left-1 shadow-xl p-3 ml-7 space-y-2 bg-white items-left overflow-x-visible">
-      <h2 class="card-title text-sm text-slate-500">Cats</h2>
-      <div class="container">
-        <div class="ledger__scroll">
-          {#each catProfiles as { name, avatar }}
-            <LedgerProfile avatar = { avatar } name = { name }/>
-          {/each}
-        </div>
+  <div bind:this="{legendElement}" class="card fixed left-1 shadow-xl p-3 ml-7 space-y-2 bg-white items-left overflow-x-visible">
+    <h2 class="card-title text-sm text-slate-500">Cats</h2>
+    <div class="container">
+      <div class="ledger__scroll">
+        {#each catProfiles as { name, avatar }}
+          <LedgerProfile avatar = { avatar } name = { name }/>
+        {/each}
       </div>
     </div>
   </div>
+</div>

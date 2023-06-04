@@ -1,9 +1,3 @@
-<script>
-    import LedgerProfile from './LedgerProfile.svelte';
-</script>
-
-
-
 
 <div class="card fixed left-1 shadow-xl p-3 ml-7 space-y-2 bg-white items-left">
     <h2 class="card-title text-sm text-slate-500">Cats</h2>

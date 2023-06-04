@@ -38,6 +38,7 @@
         align-self: center;
         justify-self: start;
         margin-left: 25%;
+        white-space: nowrap;
     }
 
 </style>
