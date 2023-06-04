@@ -7,7 +7,7 @@
   import { ref, push, child, get, set, getDatabase, onValue, update } from 'firebase/database';
   import LedgerProfile from './LedgerProfile.svelte';
   import markerIcon from "../images/marker.png";
-
+  import { goto } from '$app/navigation';
 
   const firebaseConfig = {
   apiKey: "AIzaSyBEQ0yl78oVx87pxPJd8Jrt-LOp7wPmTLA",
@@ -97,7 +97,7 @@ function onRadiusChange(event){
   });
 }
 
-  let map, mapElement, legendElement, cameraElement, slider, boundary, inputName, currentPosition, catWindow, range;
+  let map, mapElement, legendElement, newPostElement, slider, boundary, inputName, currentPosition, catWindow, range;
   
 
   onMount(async () => {
@@ -225,7 +225,7 @@ function onRadiusChange(event){
     // Add the legend to the map
     map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(legendElement);
     // Add map
-    map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(cameraElement);
+    map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(newPostElement);
 
     
     map.controls[google.maps.ControlPosition.LEFT_TOP].push(slider);
@@ -344,23 +344,9 @@ function displayRoute(L1, L2) {
 
 
 
-function openCamera() {
-  // Check if the device supports the getUserMedia API
-  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-    // Open the camera
-    navigator.mediaDevices.getUserMedia({ video: true })
-      .then((stream) => {
-        // Camera access granted, do something with the stream if needed
-      })
-      .catch((error) => {
-        // Handle camera access denied or other errors
-        console.error('Error accessing camera:', error);
-      });
-  } else {
-    console.error('getUserMedia API is not supported on this device.');
-  }
+function newPost() {
+  goto('new_post')
 }
-
 
 </script>
 
@@ -418,16 +404,19 @@ function openCamera() {
     margin-left: 10%;
   } */
 
+  .file-input {
+    display: block;
+    width: 100%;
+    max-width: 300px; /* Adjust the maximum width as needed */
+    margin: 0 auto;
+  }
+
 </style>
 
   <div bind:this="{mapElement}" class="map-container">
-    <div bind:this="{cameraElement}" class="mr-3 mb-5">
-      <!-- <button class="btn btn-active btn-secondary" on:click="{openCamera}">Camera</button> -->
+    <div bind:this="{newPostElement}" class="mr-3 mb-5">
+      <button class="btn btn-active btn-secondary" on:click="{newPost}">Post</button>
 
-      <form action="server.cgi" method="post" enctype="multipart/form-data" class="file-input w-full max-w-xs">
-        <input type="file" name="image" accept="image/*" capture="user" class="file-input file-input-bordered file-input-secondary w-full max-w-xs" />
-        <input type="submit" value="Upload">
-      </form>
     </div>
 
 
