@@ -34,10 +34,3 @@
     fileInput.click();
   }
 </script>
-
-
-
-
-
-  
-  
