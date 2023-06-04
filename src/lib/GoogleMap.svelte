@@ -52,6 +52,7 @@
 
 function onRadiusChange(event){
   displayCatMarkers();
+  range.setRadius(radius)
 }
 
   /**
@@ -96,7 +97,7 @@ function onRadiusChange(event){
   });
 }
 
-  let map, mapElement, legendElement, cameraElement, slider, boundary, inputName, currentPosition, catWindow;
+  let map, mapElement, legendElement, cameraElement, slider, boundary, inputName, currentPosition, catWindow, range;
   
 
   onMount(async () => {
@@ -303,6 +304,17 @@ function addUserMarker(){
           scaledSize: new google.maps.Size(36, 36)
         }
   })
+
+  range = new google.maps.Circle({
+    strokeColor: "#8380f9",
+    strokeOpacity: 1,
+    strokeWeight: 2,
+    fillColor: "#8380f9",
+    fillOpacity: 0.20,
+    map,
+    center: currentPosition,
+    radius: radius,
+  })
 }
 
 /**
@@ -428,7 +440,7 @@ function openCamera() {
       <div class="container">
         <div class="ledger__scroll">
           {#each catProfiles as { name, avatar }}
-            <LedgerProfile profilePic = { avatar } name = { name }/>
+            <LedgerProfile avatar = { avatar } name = { name }/>
           {/each}
         </div>
       </div>
