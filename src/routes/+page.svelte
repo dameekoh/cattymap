@@ -7,7 +7,7 @@
 
     let login = true;
     let isLoading = true;
-    let post = true;
+    let post = false;
     const dummyPosts = [
       {name:"not cat punn", 
       picture: "https://media-cldnry.s-nbcnews.com/image/upload/rockcms/2022-08/220805-domestic-cat-mjf-1540-382ba2.jpg", 

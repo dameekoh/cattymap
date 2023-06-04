@@ -107,7 +107,17 @@ function onRadiusChange(event){
       });
     });
   }
-  let map, mapElement, legendElement, newPostElement, slider, boundary, inputName, currentPosition, catWindow, range;
+  let map, 
+      mapElement, 
+      legendElement, 
+      newPostElement, 
+      slider, 
+      boundary, 
+      inputName, 
+      currentPosition, 
+      catWindow, 
+      userMarker,
+      range;
   
 
   onMount(async () => {
@@ -240,16 +250,19 @@ function onRadiusChange(event){
 
     
     map.controls[google.maps.ControlPosition.LEFT_TOP].push(slider);
+    addUserMarker();
     setCurrentPosition();
     addCatMarkers();
-    addUserMarker();
     };
     document.head.appendChild(script);
     return () => script.remove();
   });
 
 
-
+  setInterval(() => {
+    setCurrentPosition();
+  }, 1000);
+  
   /**
    * Adding cat markers according to the data from database
    */
@@ -307,9 +320,7 @@ function displayCatMarkers(){
  * Add user marker based on the current location
  */
 function addUserMarker(){
-  const marker = new google.maps.Marker({
-    position: currentPosition,
-    map: map,
+  userMarker = new google.maps.Marker({
     icon:{
           url: markerIcon,
           scaledSize: new google.maps.Size(36, 36)
@@ -323,7 +334,6 @@ function addUserMarker(){
     fillColor: "#8380f9",
     fillOpacity: 0.20,
     map,
-    center: currentPosition,
     radius: radius,
   })
 }
@@ -339,7 +349,9 @@ async function setCurrentPosition(){
             lat: position.coords.latitude,
             lng: position.coords.longitude,
           };
-          addUserMarker();
+          userMarker.setMap(map);
+          userMarker.setPosition(currentPosition);
+          range.setCenter(currentPosition);
           map.setCenter(currentPosition);
         }
       );
