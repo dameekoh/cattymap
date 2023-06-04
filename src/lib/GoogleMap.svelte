@@ -104,7 +104,7 @@ function onRadiusChange(event){
       });
     });
   }
-  let map, mapElement, legendElement, cameraElement, slider, boundary, inputName, currentPosition, catWindow;
+  let map, mapElement, legendElement, newPostElement, slider, boundary, inputName, currentPosition, catWindow, range;
   
 
   onMount(async () => {
@@ -421,25 +421,25 @@ function newPost() {
 
 </style>
 
-  <div bind:this="{mapElement}" class="map-container">
-    <div bind:this="{newPostElement}" class="mr-3 mb-5">
-      <button class="btn btn-active btn-secondary" on:click="{newPost}">Post</button>
+<div bind:this="{mapElement}" class="map-container">
+  <div bind:this="{newPostElement}" class="mr-3 mb-5">
+    <button class="btn btn-active btn-secondary" on:click="{newPost}">Post</button>
 
-    </div>
+  </div>
 
 
-    <div bind:this="{slider}" class="slider">
-      <input type="range" min="0" max="2000" step="25" bind:value={radius} on:input={onRadiusChange} class="range range-secondary" />
-    </div>
+  <div bind:this="{slider}" class="slider">
+    <input type="range" min="0" max="2000" step="25" bind:value={radius} on:input={onRadiusChange} class="range range-secondary" />
+  </div>
 
-    <div bind:this="{legendElement}" class="card fixed left-1 shadow-xl p-3 ml-7 space-y-2 bg-white items-left overflow-x-visible">
-      <h2 class="card-title text-sm text-slate-500">Cats</h2>
-      <div class="container">
-        <div class="ledger__scroll">
-          {#each catProfiles as { name, avatar }}
-            <LedgerProfile avatar = { avatar } name = { name }/>
-          {/each}
-        </div>
+  <div bind:this="{legendElement}" class="card fixed left-1 shadow-xl p-3 ml-7 space-y-2 bg-white items-left overflow-x-visible">
+    <h2 class="card-title text-sm text-slate-500">Cats</h2>
+    <div class="container">
+      <div class="ledger__scroll">
+        {#each catProfiles as { name, avatar }}
+          <LedgerProfile avatar = { avatar } name = { name }/>
+        {/each}
       </div>
     </div>
   </div>
+</div>
