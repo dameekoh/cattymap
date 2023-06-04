@@ -93,7 +93,6 @@ function onRadiusChange(event){
   
 
   onMount(async () => {
-    await setCurrentPosition();
     const script = document.createElement('script');
     script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBEQ0yl78oVx87pxPJd8Jrt-LOp7wPmTLA&libraries=geometry`;
     script.async = true;
@@ -222,7 +221,7 @@ function onRadiusChange(event){
 
     
     map.controls[google.maps.ControlPosition.LEFT_TOP].push(slider);
-    addUserMarker();
+    setCurrentPosition();
     addCatMarkers();
     addUserMarker();
     };
@@ -302,17 +301,18 @@ function addUserMarker(){
 /**
  * Set the use current position
  */
-function setCurrentPosition(){
+async function setCurrentPosition(){
   if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
+      await navigator.geolocation.getCurrentPosition(
         (position) => {
           currentPosition = {
             lat: position.coords.latitude,
             lng: position.coords.longitude,
           };
+          addUserMarker();
         }
       );
-      addUserMarker();
+     
   } else {
     return null
   }
