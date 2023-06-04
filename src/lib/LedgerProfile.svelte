@@ -1,5 +1,5 @@
 <script>
-    export let profilePic = "https://cdn.iconscout.com/icon/premium/png-512-thumb/american-shorthair-1975261-1664591.png?f=avif&w=256";
+    export let avatar = "https://cdn.iconscout.com/icon/premium/png-512-thumb/american-shorthair-1975261-1664591.png?f=avif&w=256";
     export let name = "no name cat";
     export let checked = true; 
 </script>
@@ -43,7 +43,7 @@
 
 <div class="ledgerSection">
     <div class="profile-pic-container">
-        <img class="profile-pic" src={profilePic} />
+        <img class="profile-pic" src={avatar} />
     </div>
 
     <div class="name"> {name} </div>
