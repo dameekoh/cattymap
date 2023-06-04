@@ -25,12 +25,6 @@
 </script>
 
 {#if login}
-
-  <div class="app__header">
-    <h1 class="header__text">
-      CattyMap
-    </h1>
-  </div>
   <div class="app__container">
     <GoogleMap />
   </div>
