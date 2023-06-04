@@ -9,7 +9,7 @@
 
   .selected-image {
     width: 100%;
-    height: 40vh;
+    height: 35vh;
   }
 
   .filter-card {
