@@ -5,7 +5,6 @@
     export let caption = "Hi this is cat";
     // export let taggedCats = [];
 </script>
-
 <div class="post">
     <div class="post__pic__container">
         <img class="post__pic" src={ picture } alt="">
@@ -24,6 +23,7 @@
         border-radius: 2%;
         box-shadow: 0px 0px 5px #999999;
         overflow: hidden;
+        margin-bottom: 2%;
     }
 
     .post__pic{
@@ -49,5 +49,13 @@
         height: 50%;
         overflow-y: hidden;
     }
+
+    @media (max-width: 400px){
+    .post{
+        width: 100%;
+        padding-left: 0%;
+        padding-right: 0%;
+    }
+  }
 
 </style>

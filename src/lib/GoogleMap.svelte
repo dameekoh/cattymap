@@ -1,6 +1,7 @@
 <script>
   import { onMount } from 'svelte';
   import RangeSlider from "svelte-range-slider-pips";
+  import { createEventDispatcher } from 'svelte';
 
 // fire base
 
@@ -28,6 +29,8 @@
   const database = getDatabase(app);
 
   const KAIST = { lat: 36.368865, lng: 127.362103 };
+
+  const dispatch = createEventDispatcher();
 
   //reference root 
   const dataRef = ref(database, "/");
@@ -291,19 +294,17 @@ function onRadiusChange(event){
         
         catWindow = new google.maps.InfoWindow({
           content: `<h3>${cat.name}</h3>` +
-                   '<div class="flex content-center item-center p-4">' +
-                   '<button class="btn bg-white" id="catRoute">go</button>' +
+                   '<div class="flex content-center item-center justify-self-center align-self-center p-4">' +
+                   '<button class="btn bg-white" id="seePost"> See posts </button>' +
                    '</div>'
         });
 
         //listen to the input
         google.maps.event.addListener(catWindow, 'domready', function () {
-            const catRoute = document.getElementById('catRoute');
+            const seePost = document.getElementById('seePost');
 
-            catRoute.onclick = function() {
-              const L2 = marker.getPosition();
-              console.log(L2);
-              displayRoute(currentPosition, L2);
+            seePost.onclick = function() {
+              dispatch("seePost", true);
               catWindow.close();
             }
         });
