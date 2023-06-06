@@ -88,8 +88,8 @@
       });
   }
 
-  async function savePicture(data) {
-    fetch(imageURL) //imageURL is in the form of "blob:http://..."
+  async function savePicture(data, blobURL) {
+    fetch(blobURL) //imageURL is in the form of "blob:http://..."
       .then((response) => response.blob())
       .then(async (blob) => {
         // uploading to Firebase Storage
