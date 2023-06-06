@@ -124,7 +124,10 @@ function onRadiusChange(event){
       range,
       directionsService,
       directionsRenderer;
-  export let currentPosition; 
+  export let currentPosition = {
+    lat: 0,
+    lng: 0,
+  }; 
 
   onMount(async () => {
     catProfiles = await fetchCatProfileFromDB();
