@@ -1,3 +1,5 @@
+<svelte:options accessors = {true} />
+
 <script>
   import { onMount } from 'svelte';
   import RangeSlider from "svelte-range-slider-pips";
@@ -117,13 +119,12 @@ function onRadiusChange(event){
       slider, 
       boundary, 
       inputName, 
-      currentPosition, 
       catWindow, 
       userMarker,
       range,
       directionsService,
       directionsRenderer;
-  
+  export let currentPosition; 
 
   onMount(async () => {
     catProfiles = await fetchCatProfileFromDB();
