@@ -1,3 +1,5 @@
+<svelte:options accessors={true} />
+
 <script>
   import { onMount } from 'svelte';
   import RangeSlider from "svelte-range-slider-pips";
@@ -117,14 +119,17 @@ function onRadiusChange(event){
       slider, 
       boundary, 
       inputName, 
-      currentPosition, 
       catWindow, 
       userMarker,
       range,
       directionsService,
       directionsRenderer;
-  
 
+  export let currentPosition = {
+  lat: 36.3729,
+  lng: 127.3600,
+};
+  
   onMount(async () => {
     catProfiles = await fetchCatProfileFromDB();
     const script = document.createElement('script');
@@ -361,6 +366,7 @@ function addUserMarker(){
 /**
  * Set the use current position
  */
+
 async function setCurrentPosition(){
   if (navigator.geolocation) {
       await navigator.geolocation.getCurrentPosition(

@@ -60,8 +60,13 @@
 <script>
   import { onMount } from 'svelte';
   import { selectedFile } from '../../stores/image';
+  import GoogleMap from '../../lib/GoogleMap.svelte';
   let fileUrl;
   let selectedFilter = '';
+  let gmap;
+  let currentPosition;
+
+  
 
   const loadImage = (src) => {
     fileUrl = src;
@@ -70,8 +75,12 @@
 
   onMount(() => {
     $selectedFile && loadImage(URL.createObjectURL($selectedFile));
+    console.log(gmap.currentPosition);
+
   });
 </script>
+<GoogleMap bind:this={gmap} bind:currentPosition />;
+
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cssgram/0.1.10/cssgram.min.css">
 <div class="selected-image">
