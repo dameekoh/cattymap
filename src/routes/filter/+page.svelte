@@ -75,18 +75,7 @@
 
   onMount(async () => {
     $selectedFile && loadImage(URL.createObjectURL($selectedFile));
-<<<<<<< HEAD
     console.log(getCurrentPosition());
-=======
-    // console.log(gmap.currentPosition);
-
-    navigator.geolocation.getCurrentPosition((position) => {
-      currentPosition = position;
-      console.log(currentPosition);
-    });
-
-
->>>>>>> 5f1052298eb2f290f6c7b900f8a77a3a8a1137f8
   });
 
   async function getCurrentPosition(){
