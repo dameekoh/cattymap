@@ -1,9 +1,12 @@
 <script>
     // import { createEventDispatcher } from "svelte";
     import { filter } from "./store"
+    import { createEventDispatcher } from "svelte";
 
     export let avatar = "https://cdn.iconscout.com/icon/premium/png-512-thumb/american-shorthair-1975261-1664591.png?f=avif&w=256";
     export let name = "no name cat";
+
+    const dispatcher = createEventDispatcher();
     let check = true;
     $filter[name] = check;
 
@@ -59,6 +62,7 @@
                 <input type="checkbox" class="checkbox checkbox-secondary " bind:checked={check} on:change = {() => {
                     $filter[name] = check;
                     console.log($filter);
+                    dispatcher("filterChange")
                 }}/>
         </label>
     </div>

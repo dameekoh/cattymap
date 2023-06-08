@@ -97,7 +97,7 @@
         // might have to change jpeg
         let fileRef = sref(storage, `images/${fileName}.jpeg`);
         // might have to change data.image to a image data url
-        await uploadString(fileRef, data.image, "data_url")
+        await uploadString(fileRef, blob, "data_url")
           .then((snapshot) => {
             console.log("Uploaded a data_url string!");
           })

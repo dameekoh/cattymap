@@ -8,11 +8,12 @@
 // fire base
 
   import { initializeApp } from "firebase/app";
-  import { ref, push, child, get, set, getDatabase, onValue, update } from 'firebase/database';
+  import { ref, get, set, getDatabase, onValue, update } from 'firebase/database';
   import LedgerProfile from './LedgerProfile.svelte';
   import markerIcon from "../images/marker.png";
   import { goto } from '$app/navigation';
   import { selectedFile } from '../stores/image';
+  import { filter } from './store';
 
 
   const firebaseConfig = {
@@ -125,9 +126,9 @@ function onRadiusChange(event){
       directionsService,
       directionsRenderer;
 
-  export let currentPosition = {
-  lat: 36.3729,
-  lng: 127.3600
+   let currentPosition = {
+    lat: 36.368865, 
+    lng: 127.362103
 };
   
   onMount(async () => {
@@ -334,7 +335,8 @@ function displayCatMarkers(){
     const currentLatLng = new google.maps.LatLng(currentPosition.lat, currentPosition.lng);
     const catLatLng = marker.getPosition();
     const distance = google.maps.geometry.spherical.computeDistanceBetween(currentLatLng, catLatLng);
-    if (distance <= radius && marker.getTitle) {
+    console.log($filter[marker.getTitle()]);
+    if (distance <= radius && $filter[marker.getTitle()]) {
       marker.setMap(map);
     }else {
       marker.setMap(null);
@@ -377,7 +379,6 @@ async function setCurrentPosition(){
             lat: position.coords.latitude,
             lng: position.coords.longitude,
           };
-          console.log(currentPosition);
           userMarker.setMap(map);
           userMarker.setPosition(currentPosition);
           range.setCenter(currentPosition);
@@ -504,7 +505,7 @@ async function handleFileChange(event) {
 
 
   <div bind:this="{slider}" class="slider">
-    <input type="range" min="0" max="2000" step="25" bind:value={radius} on:input={onRadiusChange} class="range range-secondary" />
+    <input type="range" min="30" max="1000" step="10" bind:value={radius} on:input={onRadiusChange} class="range range-secondary" />
   </div>
 
   <div bind:this="{legendElement}" class="card fixed left-1 shadow-xl p-3 ml-7 space-y-2 bg-white items-left overflow-x-visible">
@@ -512,7 +513,7 @@ async function handleFileChange(event) {
     <div class="container">
       <div class="ledger__scroll">
         {#each catProfiles as { name, avatar }}
-          <LedgerProfile avatar = { avatar } name = { name }/>
+          <LedgerProfile avatar = { avatar } name = { name } on:filterChange = {displayCatMarkers}/>
         {/each}
       </div>
     </div>
