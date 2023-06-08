@@ -52,7 +52,7 @@
   const catProfileCountRef = ref(database, "CatProfileCount");
   let catProfileCount;
 
-  let radius = 1000;
+  let radius = 300;
   let catProfiles = [];
 
 
@@ -335,7 +335,6 @@ function displayCatMarkers(){
     const currentLatLng = new google.maps.LatLng(currentPosition.lat, currentPosition.lng);
     const catLatLng = marker.getPosition();
     const distance = google.maps.geometry.spherical.computeDistanceBetween(currentLatLng, catLatLng);
-    console.log($filter[marker.getTitle()]);
     if (distance <= radius && $filter[marker.getTitle()]) {
       marker.setMap(map);
     }else {
@@ -505,7 +504,7 @@ async function handleFileChange(event) {
 
 
   <div bind:this="{slider}" class="slider">
-    <input type="range" min="30" max="1000" step="10" bind:value={radius} on:input={onRadiusChange} class="range range-secondary" />
+    <input type="range" min="30" max="300" step="10" bind:value={radius} on:input={onRadiusChange} class="range range-secondary" />
   </div>
 
   <div bind:this="{legendElement}" class="card fixed left-1 shadow-xl p-3 ml-7 space-y-2 bg-white items-left overflow-x-visible">
