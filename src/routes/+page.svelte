@@ -62,7 +62,7 @@
     {#if post}
     <div id="slideIn" class="post__card">
       <div class="post__card__header" on:click={ ()=>{ post = false; } }>
-        <img style="height: 100%; width: auto; margin-left: auto; margin-right: auto;" src="https://cdn0.iconfinder.com/data/icons/kuvio-basic-ui/32/more-512.png" alt="">
+        <img style="height: 100%; width: auto; margin-left: auto; margin-right: auto;" src="https://cdn-icons-png.flaticon.com/512/4225/4225690.png" alt="">
       </div>
       <div class="posts__container"> 
         {#each dummyPosts as {name, picture, caption}}

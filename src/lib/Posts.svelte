@@ -37,10 +37,12 @@
 </svg>
 
 <div class="card bordered flex flex-col items-center shadow-md overflow-hidden mb-2" on:dblclick={like}>
-    <div class="picture relative" style="background-image: url({ picture });">
-        <svg class="icon icon-heart {liked ? 'like' : ''} relative inline-block w-32 opacity-0 fill-current text-white">
-            <use xlink:href="#icon-heart"></use>
-        </svg>
+    <div class="picture-container">
+        <div class="picture" style="background-image: url({ picture });">
+            <svg class="icon icon-heart {liked ? 'like' : ''}  inline-block w-32 opacity-0 fill-current text-white">
+                <use xlink:href="#icon-heart"></use>
+            </svg>
+        </div>
     </div>
     <div class="card-body w-full py-2 bg-gray-100 flex items-center">
         <h4 class="text-lg font-bold"> <strong>{likes} likes</strong> </h4>
@@ -50,19 +52,33 @@
 </div>
 
 <style>
-.icon {
-    position: absolute;
-    top: 33%;
-    left: 42%;
-    transform: translate(-50%, -50%);
+
+.card {
+    width: 100%;
+    position: relative;
+}
+
+.picture-container {
+    width: 100%;
+    padding-bottom: 75%;  /* Maintain 4:3 aspect ratio */
+    position: relative;
 }
 
 .picture {
     background-size: cover;
     background-position: center;
-    padding-bottom: 75%;  /* to achieve 4:3 aspect ratio */
-    width: 100%;
-    position: relative;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}
+
+.icon {
+    position: absolute;
+    top: 25%;
+    left: 35%;
+    /* transform: translate(-50%, -50%); */
 }
 
 .icon.like {
@@ -99,4 +115,6 @@
         padding-right: 0;
     }
 }
+
+
 </style>
