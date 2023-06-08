@@ -64,7 +64,7 @@
     {#if post}
     <div id="slideIn" class="post__card">
       <div class="post__card__header" on:click={ ()=>{ post = false; } }>
-        <img style="height: 100%; width: auto; margin-left: auto; margin-right: auto;" src="https://cdn-icons-png.flaticon.com/512/4225/4225690.png" alt="">
+        <img style="height: 80%; width: auto; margin-left: 2%; margin-right: auto;" src="https://cdn-icons-png.flaticon.com/512/4225/4225690.png" alt="">
       </div>
       <div class="posts__container"> 
         {#each dummyPosts.filter((post) => {
@@ -139,7 +139,9 @@
   }
 
   .post__card__header{
-    height: 5%;
+    display: flex;
+    align-items: center;
+    height: 7%;
     width: 100%;
     background-color: white;
     box-shadow: 0px 0px 10px #999999;

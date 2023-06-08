@@ -61,7 +61,6 @@
         <label class="cursor-pointer label">
                 <input type="checkbox" class="checkbox checkbox-secondary " bind:checked={check} on:change = {() => {
                     $filter[name] = check;
-                    console.log($filter);
                     dispatcher("filterChange")
                 }}/>
         </label>
