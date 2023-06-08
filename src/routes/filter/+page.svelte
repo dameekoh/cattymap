@@ -60,35 +60,99 @@
 <script>
   import { onMount } from 'svelte';
   import { selectedFile } from '../../stores/image';
+  import { initializeApp } from "firebase/app";
+  import {
+    getStorage,
+    ref as sref,
+    uploadString,
+    getDownloadURL,
+  } from "firebase/storage";
+  import {
+    ref,
+    get,
+    set,
+    getDatabase,
+    onValue,
+    update,
+    query,
+    orderByChild,
+    equalTo
+  } from "firebase/database";
+  import { v4 as uuidv4 } from "uuid";
+
   let fileUrl;
   let selectedFilter = '';
+  let currentPosition;
 
+  const firebaseConfig = {
+    apiKey: "AIzaSyBEQ0yl78oVx87pxPJd8Jrt-LOp7wPmTLA",
+    authDomain: "cattymap-1b9a3.firebaseapp.com",
+    projectId: "cattymap-1b9a3",
+    storageBucket: "cattymap-1b9a3.appspot.com",
+    messagingSenderId: "368074086145",
+    appId: "1:368074086145:web:393f103f6ca32a06bbad00",
+    measurementId: "G-442J384EW1",
+    databaseURL:
+      "https://cattymap-1b9a3-default-rtdb.asia-southeast1.firebasedatabase.app/",
+  };
 
-  onMount(() => {
-    script.src`https://maps.googleapis.com/maps/api/js?key=AIzaSyBEQ0yl78oVx87pxPJd8Jrt-LOp7wPmTLA&libraries=geometry`
+  const app = initializeApp(firebaseConfig);
 
-  });
-  
-  const geolocation = new google.maps.Geolocation();
+  const storage = getStorage();
+  const database = getDatabase(app);
 
-  if (navigator.geolocation) {
-  navigator.geolocation.getCurrentPosition(
-    (position) => {
-      const currentPosition = {
-        lat: position.coords.latitude,
-        lng: position.coords.longitude,
-      };
+  //reference root
+  const dataRef = ref(database, "/");
 
-      // Use the current location as needed
-      console.log('Current Position:', currentPosition);
-    }
-  )}
+  // reference CatProfile table
+  const catProfileRef = ref(database, "CatProfile");
+  // reference CatProfile count
+  const catProfileCountRef = ref(database, "CatProfileCount");
+
+  let selectedCatName = ''; 
+  let catAvatar;
 
   const loadImage = (src) => {
     fileUrl = src;
     selectedFile.set(fileUrl);
   };
+
+  onMount(() => {
+    $selectedFile && loadImage(URL.createObjectURL($selectedFile));
+
+    navigator.geolocation.getCurrentPosition((position) => {
+      currentPosition = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+      }
+    });
+  });
+
+  function handleSelect(event) {
+    selectedCatName = event.target.value;
+    const nameQuery = query(catProfileRef, orderByChild('name'), equalTo(selectedCatName))
+
+    get(nameQuery).then((snapshot) => {
+      if (snapshot.exists()) {
+       const catData = snapshot.val();
+       const catKey = Object.keys(catData)[0];
+       const cat = catData[catKey];
+       if (cat && cat.avatar) {
+        catAvatar = cat.avatar;
+        console.log(catAvatar);
+        // Send cats to database
+       }
+      }else {
+        console.log('No such cat');
+      }
+    }).catch((error) => {
+      console.error('Error querying data: ', error);
+    })
+  }
+
+
 </script>
+<!-- <GoogleMap bind:this={gmap} bind:currentPosition />; -->
 
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cssgram/0.1.10/cssgram.min.css">
@@ -150,7 +214,7 @@
 </div>
 
 <div class="form-container">
-  <select class="select select-secondary w-60">
+  <select class="select select-secondary w-60" on:change={handleSelect} bind:value={selectedCatName}>
     <option disabled selected>Select the cat</option>
     <option>Damir</option>
     <option>Zhi Lin</option>

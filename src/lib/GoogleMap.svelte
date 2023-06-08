@@ -2,13 +2,12 @@
 
 <script>
   import { onMount } from 'svelte';
-  import RangeSlider from "svelte-range-slider-pips";
   import { createEventDispatcher } from 'svelte';
 
 // fire base
 
   import { initializeApp } from "firebase/app";
-  import { ref, push, child, get, set, getDatabase, onValue, update } from 'firebase/database';
+  import { ref, get, set, getDatabase, onValue, update } from 'firebase/database';
   import LedgerProfile from './LedgerProfile.svelte';
   import markerIcon from "../images/marker.png";
   import { goto } from '$app/navigation';
