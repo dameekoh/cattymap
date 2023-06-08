@@ -12,6 +12,12 @@
             liked = false;
         }, 1200);
     };
+
+    const shareToWhatsApp = () => {
+        const text = `Check out this awesome cat named ${name}: ${window.location.href}`;
+        const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+        window.open(url, '_blank');
+    };
 </script>
 
 <svg
@@ -39,6 +45,7 @@
     <div class="card-body w-full py-2 bg-gray-100 flex items-center">
         <h4 class="text-lg font-bold"> <strong>{likes} likes</strong> </h4>
         <h4 class="text-lg font-bold"> <strong> { name } </strong> { caption } </h4>
+        <button class='btn btn-secondary' on:click={shareToWhatsApp}>Share on WhatsApp</button>
     </div>
 </div>
 
