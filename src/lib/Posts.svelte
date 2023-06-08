@@ -38,7 +38,7 @@
 
 <div class="card bordered flex flex-col items-center shadow-md overflow-hidden mb-2" on:dblclick={like}>
     <div class="picture relative" style="background-image: url({ picture });">
-        <svg class="icon icon-heart {liked ? 'like' : ''} absolute inline-block w-32 opacity-0 fill-current text-white">
+        <svg class="icon icon-heart {liked ? 'like' : ''} relative inline-block w-32 opacity-0 fill-current text-white">
             <use xlink:href="#icon-heart"></use>
         </svg>
     </div>
