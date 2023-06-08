@@ -124,7 +124,7 @@
     selectedFile.set(fileUrl);
   };
 
-  onMount(() => {
+  onMount(async () => {
     $selectedFile && loadImage(URL.createObjectURL($selectedFile));
     navigator.geolocation.getCurrentPosition((position) => {
       currentPosition = {
