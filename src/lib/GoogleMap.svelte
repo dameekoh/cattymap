@@ -1,4 +1,4 @@
-<svelte:options accessors = {true} />
+<svelte:options accessors={true} />
 
 <script>
   import { onMount } from 'svelte';
@@ -124,11 +124,12 @@ function onRadiusChange(event){
       range,
       directionsService,
       directionsRenderer;
-  export let currentPosition = {
-    lat: 0,
-    lng: 0,
-  }; 
 
+   let currentPosition = {
+  lat: 0,
+  lng: 0,
+};
+  
   onMount(async () => {
     catProfiles = await fetchCatProfileFromDB();
     const script = document.createElement('script');
@@ -365,6 +366,7 @@ function addUserMarker(){
 /**
  * Set the use current position
  */
+
 async function setCurrentPosition(){
   if (navigator.geolocation) {
       await navigator.geolocation.getCurrentPosition(

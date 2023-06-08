@@ -60,25 +60,36 @@
 <script>
   import { onMount } from 'svelte';
   import { selectedFile } from '../../stores/image';
-  import GoogleMap from '../../lib/GoogleMap.svelte';
-
   let fileUrl;
   let selectedFilter = '';
-  let gmap;
-  let currentPosition;
+
+
+  onMount(() => {
+    script.src`https://maps.googleapis.com/maps/api/js?key=AIzaSyBEQ0yl78oVx87pxPJd8Jrt-LOp7wPmTLA&libraries=geometry`
+
+  });
   
+  const geolocation = new google.maps.Geolocation();
+
+  if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      const currentPosition = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+      };
+
+      // Use the current location as needed
+      console.log('Current Position:', currentPosition);
+    }
+  )}
 
   const loadImage = (src) => {
     fileUrl = src;
     selectedFile.set(fileUrl);
   };
-
-  onMount(() => {
-    $selectedFile && loadImage(URL.createObjectURL($selectedFile));
-    console.log(GoogleMap.currentPosition);
-  });
 </script>
-<GoogleMap bind:this={gmap} bind:currentPosition />
+
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cssgram/0.1.10/cssgram.min.css">
 <div class="selected-image">
