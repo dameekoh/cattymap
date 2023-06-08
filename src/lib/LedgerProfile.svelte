@@ -1,7 +1,12 @@
 <script>
+    // import { createEventDispatcher } from "svelte";
+    import { filter } from "./store"
+
     export let avatar = "https://cdn.iconscout.com/icon/premium/png-512-thumb/american-shorthair-1975261-1664591.png?f=avif&w=256";
     export let name = "no name cat";
-    export let checked = true; 
+    let check = true;
+    $filter[name] = check;
+
 </script>
 
 <style>
@@ -51,11 +56,10 @@
     <div class="name"> {name} </div>
     <div class="form-control justify-self-end">
         <label class="cursor-pointer label">
-            {#if checked}
-                <input type="checkbox" checked class="checkbox checkbox-secondary " />
-            {:else}
-                <input type="checkbox" class="checkbox checkbox-secondary " />
-            {/if}
+                <input type="checkbox" class="checkbox checkbox-secondary " bind:checked={check} on:change = {() => {
+                    $filter[name] = check;
+                    console.log($filter);
+                }}/>
         </label>
     </div>
 </div>

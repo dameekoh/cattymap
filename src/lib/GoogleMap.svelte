@@ -2,8 +2,8 @@
 
 <script>
   import { onMount } from 'svelte';
-  import RangeSlider from "svelte-range-slider-pips";
   import { createEventDispatcher } from 'svelte';
+  import { currentPosts } from './store';
 
 // fire base
 
@@ -127,7 +127,7 @@ function onRadiusChange(event){
 
   export let currentPosition = {
   lat: 36.3729,
-  lng: 127.3600,
+  lng: 127.3600
 };
   
   onMount(async () => {
@@ -185,7 +185,9 @@ function onRadiusChange(event){
 
     directionsService = new google.maps.DirectionsService();
     directionsRenderer = new google.maps.DirectionsRenderer();
-
+    
+    catWindow = new google.maps.InfoWindow();
+   
     //set boundaries for KAIST
     boundary = new google.maps.LatLngBounds(
     new google.maps.LatLng(36.362357, 127.355266), 
@@ -225,9 +227,9 @@ function onRadiusChange(event){
       var contentString = '<div id="content">'+
                           '<select name="catName" id="catName" class="select bg-white">'+
                           '<option value=0>- select cat -</option>'+
-                          '<option value="Cat Damir">Damir</option>'+
-                          '<option value="Cat Zhi Lin">Zhi Lin</option>'+
-                          '<option value="Cat Punn">Punn</option>'+
+                          '<option value="Damir">Damir</option>'+
+                          '<option value="Zhi Lin">Zhi Lin</option>'+
+                          '<option value="Punn">Punn</option>'+
                           '</select>'+
                           '</div>';
       
@@ -244,9 +246,9 @@ function onRadiusChange(event){
 
           catName.oninput = function() {
             const name = catName.value; 
-            const avatar = (name == 'Cat Zhi Lin') ? ("https://cdn.iconscout.com/icon/premium/png-512-thumb/abyssinnian-cat-1975262-1664592.png?f=avif&w=256")
-                          :(name == 'Cat Damir') ? ("https://cdn.iconscout.com/icon/premium/png-512-thumb/american-shorthair-1975261-1664591.png?f=avif&w=256")
-                          :(name == 'Cat Punn') ? ("https://cdn.iconscout.com/icon/premium/png-512-thumb/nebelung-1975276-1664606.png?f=avif&w=256")
+            const avatar = (name == 'Zhi Lin') ? ("https://cdn.iconscout.com/icon/premium/png-512-thumb/abyssinnian-cat-1975262-1664592.png?f=avif&w=256")
+                          :(name == 'Damir') ? ("https://cdn.iconscout.com/icon/premium/png-512-thumb/american-shorthair-1975261-1664591.png?f=avif&w=256")
+                          :(name == 'Punn') ? ("https://cdn.iconscout.com/icon/premium/png-512-thumb/nebelung-1975276-1664606.png?f=avif&w=256")
                           : (null);
             
             sendToDB({postID: new Date(), name: name, ...position, avatar: avatar, image: "None", likeCount: 0});
@@ -296,13 +298,7 @@ function onRadiusChange(event){
           },
           title: cat.name
         });
-        
-        catWindow = new google.maps.InfoWindow({
-          content: `<h3>${cat.name}</h3>` +
-                   '<div class="flex content-center item-center justify-self-center align-self-center p-4">' +
-                   '<button class="btn bg-white" id="seePost"> See posts </button>' +
-                   '</div>'
-        });
+
 
         //listen to the input
         google.maps.event.addListener(catWindow, 'domready', function () {
@@ -316,6 +312,12 @@ function onRadiusChange(event){
 
         marker.addListener('click', () => {
           inputName?.close();
+          catWindow?.close();
+          $currentPosts = marker.getTitle();
+          catWindow.setContent(`<h3 id="catName">${marker.getTitle()}</h3>` +
+                   '<div class="flex content-center item-center justify-self-center align-self-center p-4">' +
+                   '<button class="btn bg-white" id="seePost"> See posts </button>' +
+                   '</div>');
           catWindow.open(map, marker);
         });
 
@@ -332,7 +334,7 @@ function displayCatMarkers(){
     const currentLatLng = new google.maps.LatLng(currentPosition.lat, currentPosition.lng);
     const catLatLng = marker.getPosition();
     const distance = google.maps.geometry.spherical.computeDistanceBetween(currentLatLng, catLatLng);
-    if (distance <= radius) {
+    if (distance <= radius && marker.getTitle) {
       marker.setMap(map);
     }else {
       marker.setMap(null);
@@ -375,6 +377,7 @@ async function setCurrentPosition(){
             lat: position.coords.latitude,
             lng: position.coords.longitude,
           };
+          console.log(currentPosition);
           userMarker.setMap(map);
           userMarker.setPosition(currentPosition);
           range.setCenter(currentPosition);
@@ -401,24 +404,6 @@ async function setMapCenter(){
   } else {
     map.setCenter(KAIST);
   }
-}
-
-function displayRoute(L1, L2) {
-
-  const request = {
-  origin: L1,
-  destination: L2,
-  travelMode: 'BICYCLING',
-  unitSystem: google.maps.UnitSystem.IMPERIAL
-  }
-
-  directionsService.route(request, function(result, status) {
-    console.log(status);
-    if (status == 'OK') {
-      directionsRenderer.setDirections(result);
-    }
-  });
-
 }
 
 function newPost() {
