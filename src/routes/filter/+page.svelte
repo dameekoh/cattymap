@@ -59,13 +59,13 @@
 
 <script>
   import { onMount } from 'svelte';
-  import { selectedFile } from '../../stores/image';
   import { initializeApp } from "firebase/app";
+  import { selectedFile } from '../../stores/image';
   import {
     getStorage,
     ref as sref,
-    uploadString,
     getDownloadURL,
+    uploadBytes,
   } from "firebase/storage";
   import {
     ref,
@@ -84,22 +84,22 @@
   let selectedFilter = '';
   let currentPosition;
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyBEQ0yl78oVx87pxPJd8Jrt-LOp7wPmTLA",
-    authDomain: "cattymap-1b9a3.firebaseapp.com",
-    projectId: "cattymap-1b9a3",
-    storageBucket: "cattymap-1b9a3.appspot.com",
-    messagingSenderId: "368074086145",
-    appId: "1:368074086145:web:393f103f6ca32a06bbad00",
-    measurementId: "G-442J384EW1",
-    databaseURL:
-      "https://cattymap-1b9a3-default-rtdb.asia-southeast1.firebasedatabase.app/",
-  };
+  // const firebaseConfig = {
+  //   apiKey: "AIzaSyBEQ0yl78oVx87pxPJd8Jrt-LOp7wPmTLA",
+  //   authDomain: "cattymap-1b9a3.firebaseapp.com",
+  //   projectId: "cattymap-1b9a3",
+  //   storageBucket: "cattymap-1b9a3.appspot.com",
+  //   messagingSenderId: "368074086145",
+  //   appId: "1:368074086145:web:393f103f6ca32a06bbad00",
+  //   measurementId: "G-442J384EW1",
+  //   databaseURL: 'https://cattymap-1b9a3-default-rtdb.asia-southeast1.firebasedatabase.app/',
+  // };
 
-  const app = initializeApp(firebaseConfig);
+
+  // const app = initializeApp(firebaseConfig);
 
   const storage = getStorage();
-  const database = getDatabase(app);
+  const database = getDatabase();
 
   //reference root
   const dataRef = ref(database, "/");
@@ -109,8 +109,15 @@
   // reference CatProfile count
   const catProfileCountRef = ref(database, "CatProfileCount");
 
+  // reference Cat table (postNumber, name, latitude, longitude, avatar, image, likeCount)
+  const catPostRef = ref(database, "Cat");
+  // reference Cat post count
+  const catPostCountRef = ref(database, "CatCount");
+  let catPostCount;
+
   let selectedCatName = ''; 
   let catAvatar;
+  let caption = '';
 
   const loadImage = (src) => {
     fileUrl = src;
@@ -119,7 +126,6 @@
 
   onMount(() => {
     $selectedFile && loadImage(URL.createObjectURL($selectedFile));
-
     navigator.geolocation.getCurrentPosition((position) => {
       currentPosition = {
         lat: position.coords.latitude,
@@ -128,8 +134,72 @@
     });
   });
 
-  function handleSelect(event) {
-    selectedCatName = event.target.value;
+  /**
+   * function to send data to database
+   * @param {Object} catDataObj
+   */
+   function sendToCatDB(catDataObj) {
+    get(catPostCountRef)
+      .then((snapshot) => {
+        catPostCount = snapshot.val();
+        set(catPostCountRef, catPostCount + 1);
+        const uniqueKey = catPostCount;
+        const dataToUpdate = {
+          [uniqueKey]: {
+            name: catDataObj.name,
+            latitude: catDataObj.lat,
+            longitude: catDataObj.lng,
+            avatar: catDataObj.avatar,
+            image: catDataObj.image,
+            likeCount: catDataObj.likeCount,
+            caption: catDataObj.caption,
+          },
+        };
+        update(catPostRef, dataToUpdate)
+          .then(() => {
+          })
+          .catch((error) => {
+            console.error("Error updating database:", error);
+          });
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
+  async function savePicture(data, blobURL) {
+    try {
+      const response = await fetch(blobURL);
+      const blob = await response.blob();
+      console.log(blob);
+      const fileName = uuidv4();
+      const fileRef = sref(storage, `images/${fileName}.jpeg`);
+      await uploadBytes(fileRef, blob);
+      console.log("Uploaded a blob!")
+
+      data.image = await getImageURL(fileRef);
+      sendToCatDB(data);
+    } catch (error) {
+      console.error("Error saving picture: ", error);
+    }
+  }
+
+  // get image url from Firebase storage
+  function getImageURL(fileRef) {
+    return new Promise((resolve, reject) => {
+      getDownloadURL(fileRef)
+        .then((url) => {
+          resolve(url);
+        })
+        .catch((error) => {
+          console.log(error);
+          reject(error);
+        });
+    });
+  }
+
+
+  function handlePublish() {
     const nameQuery = query(catProfileRef, orderByChild('name'), equalTo(selectedCatName))
 
     get(nameQuery).then((snapshot) => {
@@ -139,8 +209,15 @@
        const cat = catData[catKey];
        if (cat && cat.avatar) {
         catAvatar = cat.avatar;
-        console.log(catAvatar);
-        // Send cats to database
+        const catDataObj = {
+          name: selectedCatName,
+          lat: currentPosition.lat,
+          lng: currentPosition.lng,
+          avatar: catAvatar,
+          likeCount: 0,
+          caption 
+        }
+        savePicture(catDataObj, fileUrl);
        }
       }else {
         console.log('No such cat');
@@ -214,14 +291,14 @@
 </div>
 
 <div class="form-container">
-  <select class="select select-secondary w-60" on:change={handleSelect} bind:value={selectedCatName}>
+  <select class="select select-secondary w-60"  bind:value={selectedCatName}>
     <option disabled selected>Select the cat</option>
     <option>Damir</option>
     <option>Zhi Lin</option>
     <option>Punn</option>
   </select>
   
-    <textarea class="textarea textarea-secondary w-60" placeholder="Description"></textarea>
-  <button class="btn btn-secondary w-60">Publish</button>
+  <textarea class="textarea textarea-secondary w-60" placeholder="Description" bind:value={caption}></textarea>
+  <button class="btn btn-secondary w-60" on:click={handlePublish}>Publish</button>
   
   </div>

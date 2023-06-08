@@ -88,7 +88,7 @@
       });
   }
 
-  export async function savePicture(data, blobURL) {
+  async function savePicture(data, blobURL) {
     fetch(blobURL) //imageURL is in the form of "blob:http://..."
       .then((response) => response.blob())
       .then(async (blob) => {
