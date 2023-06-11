@@ -40,30 +40,6 @@
   let login = true;
   let isLoading = true;
   let post = false;
-  // const dummyPosts = [
-  //   {name:"Punn", 
-  //   picture: "https://media-cldnry.s-nbcnews.com/image/upload/rockcms/2022-08/220805-domestic-cat-mjf-1540-382ba2.jpg", 
-  //   caption : "Hi this is cat" },
-  //   {name:"Damir", 
-  //   picture: "https://images.unsplash.com/photo-1615789591457-74a63395c990?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZG9tZXN0aWMlMjBjYXR8ZW58MHx8MHx8fDA%3D&w=1000&q=80", 
-  //   caption : "who dat" },
-  //   {name:"Zhi Lin", 
-  //   picture: "https://media.istockphoto.com/id/1322123064/photo/portrait-of-an-adorable-white-cat-in-sunglasses-and-an-shirt-lies-on-a-fabric-hammock.jpg?s=612x612&w=0&k=20&c=-G6l2c4jNI0y4cenh-t3qxvIQzVCOqOYZNvrRA7ZU5o%3D", 
-  //   caption : "what da dog doin" },
-  //   {name:"Damir", 
-  //   picture: "https://media.istockphoto.com/id/1322123064/photo/portrait-of-an-adorable-white-cat-in-sunglasses-and-an-shirt-lies-on-a-fabric-hammock.jpg?s=612x612&w=0&k=20&c=-G6l2c4jNI0y4cenh-t3qxvIQzVCOqOYZNvrRA7ZU5o%3D", 
-  //   caption : "what da dog doin" },
-  //   {name:"Punn", 
-  //   picture: "https://media.istockphoto.com/id/1322123064/photo/portrait-of-an-adorable-white-cat-in-sunglasses-and-an-shirt-lies-on-a-fabric-hammock.jpg?s=612x612&w=0&k=20&c=-G6l2c4jNI0y4cenh-t3qxvIQzVCOqOYZNvrRA7ZU5o%3D", 
-  //   caption : "what da dog doin" },
-  //   {name:"Zhi Lin", 
-  //   picture: "https://media.istockphoto.com/id/1322123064/photo/portrait-of-an-adorable-white-cat-in-sunglasses-and-an-shirt-lies-on-a-fabric-hammock.jpg?s=612x612&w=0&k=20&c=-G6l2c4jNI0y4cenh-t3qxvIQzVCOqOYZNvrRA7ZU5o%3D", 
-  //   caption : "what da dog doin" },
-  //   {name:"Damir", 
-  //   picture: "https://media.istockphoto.com/id/1322123064/photo/portrait-of-an-adorable-white-cat-in-sunglasses-and-an-shirt-lies-on-a-fabric-hammock.jpg?s=612x612&w=0&k=20&c=-G6l2c4jNI0y4cenh-t3qxvIQzVCOqOYZNvrRA7ZU5o%3D", 
-  //   caption : "what da dog doin" },
-  // ]
-  
   let catPostList; 
   
   onMount(async () => {

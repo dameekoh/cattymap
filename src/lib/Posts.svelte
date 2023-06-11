@@ -37,7 +37,6 @@
 
     const app = initializeApp(firebaseConfig);
     const database = getDatabase(app);
-
     const commentRef = ref(database, "Comment");
     const commentCountRef = ref(database, "CommentCount");
     const likesRef = ref(database, `Cat/${key}/likeCount`);
@@ -95,7 +94,6 @@
         }
     }
 
-
     // get comments of that post 
     function fetchCommentFromDB() {
         return new Promise((resolve, reject) => {
@@ -128,8 +126,32 @@
     function arrangeComments() {
         const mergedArray = [...comments.map(item => ({ ...item, type: 'comment' })), ...userComments.map(item => ({ ...item, type: 'userComment' }))];
         sortedComments = mergedArray.sort((a, b) => a.timestamp - b.timestamp);
+    } 
+
+    function timeAgo(timestamp) {
+        const now = Date.now();
+        const secondsPast = (now - timestamp) / 1000;
+
+        if(secondsPast < 60){
+            return parseInt(secondsPast) + 's';
+        }
+        if(secondsPast < 3600){
+            return parseInt(secondsPast/60) + 'm';
+        }
+        if(secondsPast <= 86400){
+            return parseInt(secondsPast/3600) + 'h';
+        }
+        if(secondsPast > 86400){
+            let day = parseInt(secondsPast/86400);
+            if(day < 7){
+                return day + 'd';
+            }else{
+                let week = parseInt(day/7);
+                return week + 'w';
+            }
+        }
     }
-    
+
 
     const like = async () => {
         liked = true;
@@ -161,15 +183,6 @@
     const toggleComments = () => {
         showComments = !showComments;
     };
-
-    // const addComment = () => {
-    //     if (newComment) {
-    //         userComments.push({name: "User", text: newComment});
-    //         newComment = "";
-    //         showComments = true; // This line will automatically show the comments after adding a new one
-
-    //     }
-    // };
 
     async function addtoCommentDB() {
         if (newComment) {
@@ -292,21 +305,24 @@
             {#if showComments}
             <div class="comments">
                 {#each sortedComments as item}
-                  {#if item.type === 'comment'}
-                    <div class="chat chat-start">
-                      <p>{item.username}</p>
-                      <div class="chat-bubble chat-bubble-secondary">{item.content}</div>
-                    </div>
-                  {:else if item.type === 'userComment'}
-                    <div class="chat chat-end">
-                      <p>{item.username}</p>
-                      <div class="chat-bubble chat-bubble-primary">{item.content}</div>
-                    </div>
-                  {/if}
+                    {#if item.type === 'comment'}
+                        <div class="chat chat-start">
+                                <p class="username">{item.username}</p>
+                                <p class="timestamp">{timeAgo(item.timestamp)}</p>
+                                <div class="chat-bubble chat-bubble-secondary">{item.content}</div>
+                        </div>  
+                    {:else if item.type === 'userComment'}
+                        <div class="chat chat-end">
+                            <p class="timestamp">{timeAgo(item.timestamp)}</p>
+                            <div class="chat-bubble chat-bubble-primary">{item.content}</div>
+                            <p class="username">{item.username}</p>
+                        </div>
+                    {/if}
                 {/each}
             </div>
-             {/if}
+            {/if}
         </div>
+        
         <div class="w-full h-16 relative">
             <textarea class="w-full h-full rounded-md shadow-inner shadow-slate-200" bind:value={newComment} placeholder="Write a comment..."></textarea>
             <button class="btn btn-secondary absolute bottom-1 right-1" on:click={addtoCommentDB}>
@@ -348,6 +364,10 @@
     left: 0;
     bottom: 0;
     right: 0;
+}
+
+.username {
+    display: block;
 }
 
 .icon {
