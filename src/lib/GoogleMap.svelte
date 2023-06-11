@@ -448,7 +448,7 @@ async function handleFileChange(event) {
 </style>
 
 <div bind:this="{mapElement}" class="map-container">
-  <div bind:this="{newPostElement}" class="mr-3 mb-12">
+  <div bind:this="{newPostElement}" class="mr-3 mb-14">
     <button class="btn btn-active btn-secondary" on:click={chooseFile}>Post</button>
     <input type="file" id="fileInput" name="image" accept="image/*" style="display: none;" on:change={handleFileChange}>
   </div>
@@ -458,7 +458,7 @@ async function handleFileChange(event) {
     <input type="range" min="30" max="300" step="10" bind:value={radius} on:input={onRadiusChange} class="range range-secondary" />
   </div>
 
-  <div bind:this="{legendElement}" class="card fixed left-1 shadow-xl p-3 ml-7 space-y-2 bg-white items-left overflow-x-visible mb-4">
+  <div bind:this="{legendElement}" class="card fixed left-1 shadow-xl p-3 ml-7 space-y-2 bg-white items-left overflow-x-visible mb-7">
     <h2 class="card-title text-sm text-slate-500">Cats</h2>
     <div class="container">
       <div class="ledger__scroll">
