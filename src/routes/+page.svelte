@@ -206,6 +206,7 @@
   .post__card{
     width: 100%;
     left: 0%;
+    border-radius: 0%;
   }
 
   #slideIn {
