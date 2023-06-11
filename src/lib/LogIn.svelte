@@ -57,13 +57,13 @@ async function register() {
 
     // Create User data
     const user_data = {
-      email : email,
+      // email : email,
       username : username,
       last_login : Date.now()
     }
 
     // Push to Firebase Database
-    set(ref(database, 'users/' + user.uid), user_data);
+    set(ref(database, 'users/' + email), user_data);
 
     // DOne
     alert('User Created!!');
