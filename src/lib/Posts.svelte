@@ -44,6 +44,7 @@
     let commentCount;
     let comments = [];
     let userComments = [];
+    let sortedComments = [];
     let showComments = false;
     let recognition;
     let speechRecognitionAvailable = false;
@@ -89,7 +90,6 @@
     async function getLikes() {
         try {
             likes = await fetchFromDB(likesRef);
-            console.log(likes);
         }catch (error) {
             console.error('Error: ', error)
         }
@@ -124,6 +124,12 @@
         const commentDB = await fetchComment();
         comments = commentDB.filter(item => item.postNumber == key && item.username != username);
     }
+
+    function arrangeComments() {
+        const mergedArray = [...comments.map(item => ({ ...item, type: 'comment' })), ...userComments.map(item => ({ ...item, type: 'userComment' }))];
+        sortedComments = mergedArray.sort((a, b) => a.timestamp - b.timestamp);
+    }
+    
 
     const like = async () => {
         liked = true;
@@ -174,6 +180,7 @@
                 const uniqueKey = commentCount;
                 const dataToUpdate = {
                     [uniqueKey]: {
+                        timestamp: Date.now(),
                         username: username,
                         postNumber: key,
                         content: newComment
@@ -185,6 +192,7 @@
                     showComments = true; 
                     await getOwnerComments();
                     await getOtherComments();
+                    arrangeComments();
                 })
                 .catch((error) => {
                     console.error("Error updating database:", error);
@@ -201,6 +209,7 @@
         await getLikes();
         await getOwnerComments();
         await getOtherComments();
+        arrangeComments();
     })
 
     // Check if SpeechRecognition is available
@@ -282,17 +291,18 @@
             <button class="text-slate-400" on:click={toggleComments}>View all {comments.length + userComments.length} comments</button>
             {#if showComments}
             <div class="comments">
-                {#each comments as comment, commentIndex}
+                {#each sortedComments as item}
+                  {#if item.type === 'comment'}
                     <div class="chat chat-start">
-                        <p>{comment.username}</p>
-                        <div class="chat-bubble chat-bubble-secondary">{comment.content}</div>
+                      <p>{item.username}</p>
+                      <div class="chat-bubble chat-bubble-secondary">{item.content}</div>
                     </div>
-                {/each}
-                {#each userComments as userComment, userCommentIndex}
+                  {:else if item.type === 'userComment'}
                     <div class="chat chat-end">
-                        <p>{userComment.username}</p>
-                        <div class="chat-bubble chat-bubble-primary">{userComment.content}</div>
+                      <p>{item.username}</p>
+                      <div class="chat-bubble chat-bubble-primary">{item.content}</div>
                     </div>
+                  {/if}
                 {/each}
             </div>
              {/if}
