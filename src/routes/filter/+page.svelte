@@ -220,7 +220,7 @@
         }
         savePicture(catDataObj, fileUrl)
     .then(() => {
-      goto('/'); // Replace '/google-map' with the actual route to your Google Map page
+      goto('/'); 
     })
     .catch((error) => {
       console.error('Error saving picture: ', error);
