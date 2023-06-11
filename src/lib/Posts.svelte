@@ -88,9 +88,11 @@
                     {#if showComments}
                         <div class="comments">
                             {#each comments as comment (comment.name)}
-                                <div class="comment">
-                                    <strong>{comment.name}</strong>
-                                    <p>{comment.text}</p>
+                                <div class="chat chat-start">
+                                    <div class="chat-bubble chat-bubble-secondary">{comment.text}</div>
+                                </div>
+                                <div class="chat chat-end">
+                                    <div class="chat-bubble chat-bubble-info">My Comment</div>
                                 </div>
                             {/each}
                         </div>
