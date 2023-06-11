@@ -1,23 +1,131 @@
 <script>
+    import { initializeApp } from "firebase/app";
+    import { getAuth, onAuthStateChanged } from 'firebase/auth';
+    import {
+    ref,
+    get,
+    set,
+    getDatabase,
+    onValue,
+    update,
+  } from "firebase/database";
+    import { onMount } from 'svelte';
+
+
     export let name = "not cat punn";
     export let picture = "https://media-cldnry.s-nbcnews.com/image/upload/rockcms/2022-08/220805-domestic-cat-mjf-1540-382ba2.jpg";
     export let caption = "Hi this is cat";
+    export let key;
     let liked = false;
-    let likes = 0;
+    let likes = 0
+    ;
     let newComment = "";
+    let useruid;
+    let username;
+    let post;
 
-    let comments = [
-        {name: "PUNN", text: "I'm Punn"},
-        {name: "ZHI LIN", text: "I'm Zhi Lin"},
-        {name: "Damir", text: "I'm Damir"},
-    ];
-    let userComments = [
-    ];
+    const firebaseConfig = {
+    apiKey: "AIzaSyBEQ0yl78oVx87pxPJd8Jrt-LOp7wPmTLA",
+    authDomain: "cattymap-1b9a3.firebaseapp.com",
+    projectId: "cattymap-1b9a3",
+    storageBucket: "cattymap-1b9a3.appspot.com",
+    messagingSenderId: "368074086145",
+    appId: "1:368074086145:web:393f103f6ca32a06bbad00",
+    measurementId: "G-442J384EW1",
+    databaseURL: 'https://cattymap-1b9a3-default-rtdb.asia-southeast1.firebasedatabase.app/',
+  };
+
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+
+    const commentRef = ref(database, "Comment");
+    const commentCountRef = ref(database, "CommentCount");
+    const likesRef = ref(database, `Cat/${key}/likeCount`);
+    let commentCount;
+    let comments = [];
+    let userComments = [];
     let showComments = false;
 
-    const like = () => {
+    // get username of comment owner 
+    function getUserUID() {
+        return new Promise((resolve, reject) => {
+            const auth = getAuth();
+            const unsubscribe = onAuthStateChanged(auth, user => {
+                unsubscribe();
+                if (user) {
+                    resolve(user.uid);
+                }else {
+                    reject(new Error('User not signed in.'));
+                }
+            })
+        })
+    }
+    
+    async function getUserName() {
+        try {
+            useruid =  await getUserUID();
+            const usersRef = ref(database, `users/${useruid}`);
+            const user = await fetchFromDB(usersRef);
+            username = user.username;
+        }catch (error) {
+            console.error('Error: ', error);
+        }
+    }
+
+    function fetchFromDB(ref) {
+    return new Promise((resolve, reject) => {
+      onValue(ref, (snapshot) => {
+        const data = snapshot.val();
+        resolve(data);
+      }, (error) => {
+        reject(error);
+      });
+    });
+  } 
+
+    async function getLikes() {
+        try {
+            likes = await fetchFromDB(likesRef);
+            console.log(likes);
+        }catch (error) {
+            console.error('Error: ', error)
+        }
+    }
+
+
+    // get comments of that post 
+    function fetchCommentFromDB() {
+        return new Promise((resolve, reject) => {
+            onValue(commentRef, (snapshot) => {
+                const data = snapshot.val();
+                resolve(data);
+            }, (error) => {
+                reject(error);
+            });
+        });
+    }
+
+    async function fetchComment(){
+        let commentDB = await fetchCommentFromDB();
+        commentDB = Object.values(commentDB);
+        return commentDB;
+        
+    }
+
+    async function getOwnerComments() {
+        const commentDB = await fetchComment();
+        userComments = commentDB.filter(item => item.postNumber == key && item.username == username);
+    }
+    
+    async function getOtherComments() {
+        const commentDB = await fetchComment();
+        comments = commentDB.filter(item => item.postNumber == key && item.username != username);
+    }
+
+    const like = async () => {
         liked = true;
         likes++;
+        await set(likesRef, likes);
         setTimeout(() => {
             liked = false;
         }, 1200);
@@ -45,14 +153,52 @@
         showComments = !showComments;
     };
 
-    const addComment = () => {
-        if (newComment) {
-            userComments.push({name: "User", text: newComment});
-            newComment = "";
-            showComments = true; // This line will automatically show the comments after adding a new one
+    // const addComment = () => {
+    //     if (newComment) {
+    //         userComments.push({name: "User", text: newComment});
+    //         newComment = "";
+    //         showComments = true; // This line will automatically show the comments after adding a new one
 
+    //     }
+    // };
+
+    async function addtoCommentDB() {
+        if (newComment) {
+            get(commentCountRef)
+            .then((snapshot) => {
+                commentCount = snapshot.val();
+                set(commentCountRef, commentCount + 1);
+                const uniqueKey = commentCount;
+                const dataToUpdate = {
+                    [uniqueKey]: {
+                        username: username,
+                        postNumber: key,
+                        content: newComment
+                    },
+                };
+                update(commentRef, dataToUpdate)
+                .then(async () => {
+                    newComment = "";
+                    showComments = true; 
+                    await getOwnerComments();
+                    await getOtherComments();
+                })
+                .catch((error) => {
+                    console.error("Error updating database:", error);
+                });
+            })
+            .catch((error) => {
+                console.error(error);
+            });
         }
-    };
+    }
+
+    onMount(async () => {
+        await getUserName();
+        await getLikes();
+        await getOwnerComments();
+        await getOtherComments();
+    })
 
 </script>
 
@@ -96,26 +242,26 @@
 
             <h4 class="text-lg font-bold"> <strong>Comments</strong> </h4>
             <div class="comment-box">
-                <button on:click={toggleComments}>View all {comments.length} comments</button>
+                <button on:click={toggleComments}>View all {comments.length + userComments.length} comments</button>
                 {#if showComments}
                     <div class="comments">
-                        {#each comments as comment (comment.name)}
+                        {#each comments as comment, commentIndex}
                             <div class="chat chat-start">
-                                <p>{comment.name}</p>
-                                <div class="chat-bubble chat-bubble-secondary">{comment.text}</div>
+                                <p>{comment.username}</p>
+                                <div class="chat-bubble chat-bubble-secondary">{comment.content}</div>
                             </div>
                         {/each}
-                        {#each userComments as userComment (userComment.name)}
+                        {#each userComments as userComment, userCommentIndex}
                             <div class="chat chat-end">
-                                <p>{userComment.name}</p>
-                                <div class="chat-bubble chat-bubble-primary">{userComment.text}</div>
+                                <p>{userComment.username}</p>
+                                <div class="chat-bubble chat-bubble-primary">{userComment.content}</div>
                             </div>
                         {/each}
                     </div>
                 {/if}
                 <div>
                     <textarea bind:value={newComment} placeholder="Write a comment..."></textarea>
-                    <button class="btn btn-secondary" on:click={addComment}>
+                    <button class="btn btn-secondary" on:click={addtoCommentDB}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send-fill" viewBox="0 0 16 16"> <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083l6-15Zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471-.47 1.178Z"/> </svg>
                     </button>
                 </div>

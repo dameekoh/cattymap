@@ -76,10 +76,10 @@
 
     // get cat posts 
     const catPosts = await fetchCatPostFromDB();
-    catPostList = [].concat(...Object.values(catPosts));
 
-    // put cat posts in an array [{name: .. , ...}, {name: .., ...}, ...]
-    console.log(catPostList);
+    // put cat posts in an array [{key: .., name: .. , ...}, {key:..,name: .., ...}, ...]
+    catPostList = Object.entries(catPosts).map(([key, value]) => {
+    return { key, ...value };})
   });
 
   function updateLogInStatus(event) {
@@ -106,8 +106,8 @@
     <div class="posts__container"> 
       {#each catPostList.filter((post) => {
         if (post.name == $currentPosts) {return post;}
-      }) as {avatar, image, latitude, likeCount, longitude, name, caption}}
-      <Posts name = {name} picture = {image} caption = {caption} />
+      }) as {key, avatar, image, latitude, likeCount, longitude, name, caption}}
+      <Posts key={key} name = {name} picture = {image} caption = {caption} />
       {/each}
     </div>
   </div>
