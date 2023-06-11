@@ -1,12 +1,10 @@
 <svelte:options accessors={true} />
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <script>
   import { onMount } from 'svelte';
   import { createEventDispatcher } from 'svelte';
   import { currentPosts } from './store';
-
-// fire base
-
   import { initializeApp } from "firebase/app";
   import { ref, get, set, getDatabase, onValue, update } from 'firebase/database';
   import LedgerProfile from './LedgerProfile.svelte';
@@ -54,7 +52,6 @@
 
   let radius = 300;
   let catProfiles = [];
-
 
 function onRadiusChange(event){
   displayCatMarkers();
@@ -446,52 +443,6 @@ async function handleFileChange(event) {
     overflow-x: visible;
     overflow-y: auto;
     height: 20vh;
-  }
-  .file-label {
-      /* Style the label to resemble a button */
-      display: inline-block;
-      padding: 6px 12px;
-      background-color: #f0f0f0;
-      color: #333;
-      border: 1px solid #ccc;
-      cursor: pointer;
-    }
-  
-    .file-label input[type="file"] {
-      /* Hide the default file input */
-      display: none;
-    }
-
-  /* Legend styles */
-  /* .legend {
-    background-color: rgba(255, 255, 255, 0.8);
-    padding: 10px;
-    border-radius: 14px;
-    font-size: 14px;
-  }
-
-  .legend-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 40px;
-  }
-
-  .legend-color {
-    width: 16px;
-    height: 16px;
-    margin-right: 15px;
-  }
-
-  .label-text {
-    width: 120px;
-    margin-left: 10%;
-  } */
-
-  .file-input {
-    display: block;
-    width: 100%;
-    max-width: 300px; /* Adjust the maximum width as needed */
-    margin: 0 auto;
   }
 
 </style>
