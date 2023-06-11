@@ -178,7 +178,7 @@
     100% { left: 50%; }
 }
 
-@media (max-width: 400px){
+@media (max-width: 600px){
   .post__card{
     width: 100%;
     left: 0%;

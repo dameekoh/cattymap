@@ -308,7 +308,7 @@
                         <div class="chat chat-start">
                             <div class="chat-image avatar">
                                 <div class="w-10 rounded-full">
-                                  <img src="https://cutewallpaper.org/24/person-icon-png-transparent/person-icon-grey-grey-person-icon-png-transparent-png-vhv.png" />
+                                  <!-- <img src="https://cutewallpaper.org/24/person-icon-png-transparent/person-icon-grey-grey-person-icon-png-transparent-png-vhv.png" /> -->
                                 </div>
                               </div>
                             <div class="chat-header">
@@ -321,7 +321,7 @@
                         <div class="chat chat-end">
                             <div class="chat-image avatar">
                                 <div class="w-10 rounded-full">
-                                <img src="https://cutewallpaper.org/24/person-icon-png-transparent/person-icon-grey-grey-person-icon-png-transparent-png-vhv.png" />
+                                <!-- <img src="https://cutewallpaper.org/24/person-icon-png-transparent/person-icon-grey-grey-person-icon-png-transparent-png-vhv.png" /> -->
                                 </div>
                             </div>
                             <div class="chat-header">
