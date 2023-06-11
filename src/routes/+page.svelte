@@ -157,12 +157,11 @@
   border-radius: 2%;
   flex-wrap: wrap;
   width: 50%;
-  height: 100%;
+  height: 110%;
   top: 0;
   left: 50%;
   position: absolute;
   background-color: white;
-  padding: 0%;
   box-shadow: 0px 0px 20px #999999;
   overflow: hidden;
 }
@@ -172,6 +171,7 @@
   padding-right: 2%;
   overflow-y: auto;
   height: 100%;
+  padding-bottom: 30%;
   padding-top: 5%;
 }
 
