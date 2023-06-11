@@ -152,7 +152,6 @@
         }
     }
 
-
     const like = async () => {
         liked = true;
         likes++;
@@ -307,16 +306,30 @@
                 {#each sortedComments as item}
                     {#if item.type === 'comment'}
                         <div class="chat chat-start">
-                                <p class="username">{item.username}</p>
-                                <p class="timestamp">{timeAgo(item.timestamp)}</p>
-                                <div class="chat-bubble chat-bubble-secondary">{item.content}</div>
+                            <div class="chat-image avatar">
+                                <div class="w-10 rounded-full">
+                                  <img src="https://cutewallpaper.org/24/person-icon-png-transparent/person-icon-grey-grey-person-icon-png-transparent-png-vhv.png" />
+                                </div>
+                              </div>
+                            <div class="chat-header">
+                                {item.username}
+                                <time class="text-xs opacity-50">{timeAgo(item.timestamp)}</time>
+                            </div>
+                            <div class="chat-bubble chat-bubble-secondary">{item.content}</div>
                         </div>  
                     {:else if item.type === 'userComment'}
                         <div class="chat chat-end">
-                            <p class="timestamp">{timeAgo(item.timestamp)}</p>
+                            <div class="chat-image avatar">
+                                <div class="w-10 rounded-full">
+                                <img src="https://cutewallpaper.org/24/person-icon-png-transparent/person-icon-grey-grey-person-icon-png-transparent-png-vhv.png" />
+                                </div>
+                            </div>
+                            <div class="chat-header">
+                                {item.username}
+                                <time class="text-xs opacity-50">{timeAgo(item.timestamp)}</time>
+                            </div>
                             <div class="chat-bubble chat-bubble-primary">{item.content}</div>
-                            <p class="username">{item.username}</p>
-                        </div>
+                        </div> 
                     {/if}
                 {/each}
             </div>
@@ -402,7 +415,6 @@
 .comment__container {
     width: 100%;
     display: flex;
-    align-items: flex-start;
     justify-content:last baseline;
     flex-direction: column;
 
