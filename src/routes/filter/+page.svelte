@@ -60,6 +60,7 @@
 <script>
   import { onMount } from 'svelte';
   import { initializeApp } from "firebase/app";
+  import { goto } from '$app/navigation';
   import { selectedFile } from '../../stores/image';
   import {
     getStorage,
@@ -217,7 +218,13 @@
           likeCount: 0,
           caption 
         }
-        savePicture(catDataObj, fileUrl);
+        savePicture(catDataObj, fileUrl)
+    .then(() => {
+      goto('/'); // Replace '/google-map' with the actual route to your Google Map page
+    })
+    .catch((error) => {
+      console.error('Error saving picture: ', error);
+    });
        }
       }else {
         console.log('No such cat');

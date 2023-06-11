@@ -7,53 +7,90 @@
     import { onMount } from 'svelte';
     import { filter } from "../lib/store"
     import { currentPosts } from '../lib/store';
+    import { ref, getDatabase, onValue } from "firebase/database";
+    import { initializeApp } from "firebase/app";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBEQ0yl78oVx87pxPJd8Jrt-LOp7wPmTLA",
+      authDomain: "cattymap-1b9a3.firebaseapp.com",
+      projectId: "cattymap-1b9a3",
+      storageBucket: "cattymap-1b9a3.appspot.com",
+      messagingSenderId: "368074086145",
+      appId: "1:368074086145:web:393f103f6ca32a06bbad00",
+      measurementId: "G-442J384EW1",
+      databaseURL: 'https://cattymap-1b9a3-default-rtdb.asia-southeast1.firebasedatabase.app/',
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+    // reference Cat table (postNumber, name, latitude, longitude, avatar, image, likeCount)
+    const catPostRef = ref(database, "Cat");
+
+    function fetchCatPostFromDB() {
+    return new Promise((resolve, reject) => {
+      onValue(catPostRef, (snapshot) => {
+        const data = snapshot.val();
+        resolve(data);
+      }, (error) => {
+        reject(error);
+      });
+    });
+  }
 
     let login = true;
     let isLoading = true;
     let post = false;
-    const dummyPosts = [
-      {name:"Punn", 
-      picture: "https://media-cldnry.s-nbcnews.com/image/upload/rockcms/2022-08/220805-domestic-cat-mjf-1540-382ba2.jpg", 
-      caption : "Hi this is cat" },
-      {name:"Damir", 
-      picture: "https://images.unsplash.com/photo-1615789591457-74a63395c990?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZG9tZXN0aWMlMjBjYXR8ZW58MHx8MHx8fDA%3D&w=1000&q=80", 
-      caption : "who dat" },
-      {name:"Zhi Lin", 
-      picture: "https://media.istockphoto.com/id/1322123064/photo/portrait-of-an-adorable-white-cat-in-sunglasses-and-an-shirt-lies-on-a-fabric-hammock.jpg?s=612x612&w=0&k=20&c=-G6l2c4jNI0y4cenh-t3qxvIQzVCOqOYZNvrRA7ZU5o%3D", 
-      caption : "what da dog doin" },
-      {name:"Damir", 
-      picture: "https://media.istockphoto.com/id/1322123064/photo/portrait-of-an-adorable-white-cat-in-sunglasses-and-an-shirt-lies-on-a-fabric-hammock.jpg?s=612x612&w=0&k=20&c=-G6l2c4jNI0y4cenh-t3qxvIQzVCOqOYZNvrRA7ZU5o%3D", 
-      caption : "what da dog doin" },
-      {name:"Punn", 
-      picture: "https://media.istockphoto.com/id/1322123064/photo/portrait-of-an-adorable-white-cat-in-sunglasses-and-an-shirt-lies-on-a-fabric-hammock.jpg?s=612x612&w=0&k=20&c=-G6l2c4jNI0y4cenh-t3qxvIQzVCOqOYZNvrRA7ZU5o%3D", 
-      caption : "what da dog doin" },
-      {name:"Zhi Lin", 
-      picture: "https://media.istockphoto.com/id/1322123064/photo/portrait-of-an-adorable-white-cat-in-sunglasses-and-an-shirt-lies-on-a-fabric-hammock.jpg?s=612x612&w=0&k=20&c=-G6l2c4jNI0y4cenh-t3qxvIQzVCOqOYZNvrRA7ZU5o%3D", 
-      caption : "what da dog doin" },
-      {name:"Damir", 
-      picture: "https://media.istockphoto.com/id/1322123064/photo/portrait-of-an-adorable-white-cat-in-sunglasses-and-an-shirt-lies-on-a-fabric-hammock.jpg?s=612x612&w=0&k=20&c=-G6l2c4jNI0y4cenh-t3qxvIQzVCOqOYZNvrRA7ZU5o%3D", 
-      caption : "what da dog doin" },
-    ]
+    // const dummyPosts = [
+    //   {name:"Punn", 
+    //   picture: "https://media-cldnry.s-nbcnews.com/image/upload/rockcms/2022-08/220805-domestic-cat-mjf-1540-382ba2.jpg", 
+    //   caption : "Hi this is cat" },
+    //   {name:"Damir", 
+    //   picture: "https://images.unsplash.com/photo-1615789591457-74a63395c990?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZG9tZXN0aWMlMjBjYXR8ZW58MHx8MHx8fDA%3D&w=1000&q=80", 
+    //   caption : "who dat" },
+    //   {name:"Zhi Lin", 
+    //   picture: "https://media.istockphoto.com/id/1322123064/photo/portrait-of-an-adorable-white-cat-in-sunglasses-and-an-shirt-lies-on-a-fabric-hammock.jpg?s=612x612&w=0&k=20&c=-G6l2c4jNI0y4cenh-t3qxvIQzVCOqOYZNvrRA7ZU5o%3D", 
+    //   caption : "what da dog doin" },
+    //   {name:"Damir", 
+    //   picture: "https://media.istockphoto.com/id/1322123064/photo/portrait-of-an-adorable-white-cat-in-sunglasses-and-an-shirt-lies-on-a-fabric-hammock.jpg?s=612x612&w=0&k=20&c=-G6l2c4jNI0y4cenh-t3qxvIQzVCOqOYZNvrRA7ZU5o%3D", 
+    //   caption : "what da dog doin" },
+    //   {name:"Punn", 
+    //   picture: "https://media.istockphoto.com/id/1322123064/photo/portrait-of-an-adorable-white-cat-in-sunglasses-and-an-shirt-lies-on-a-fabric-hammock.jpg?s=612x612&w=0&k=20&c=-G6l2c4jNI0y4cenh-t3qxvIQzVCOqOYZNvrRA7ZU5o%3D", 
+    //   caption : "what da dog doin" },
+    //   {name:"Zhi Lin", 
+    //   picture: "https://media.istockphoto.com/id/1322123064/photo/portrait-of-an-adorable-white-cat-in-sunglasses-and-an-shirt-lies-on-a-fabric-hammock.jpg?s=612x612&w=0&k=20&c=-G6l2c4jNI0y4cenh-t3qxvIQzVCOqOYZNvrRA7ZU5o%3D", 
+    //   caption : "what da dog doin" },
+    //   {name:"Damir", 
+    //   picture: "https://media.istockphoto.com/id/1322123064/photo/portrait-of-an-adorable-white-cat-in-sunglasses-and-an-shirt-lies-on-a-fabric-hammock.jpg?s=612x612&w=0&k=20&c=-G6l2c4jNI0y4cenh-t3qxvIQzVCOqOYZNvrRA7ZU5o%3D", 
+    //   caption : "what da dog doin" },
+    // ]
+    
+    let catPostList; 
+    
+    onMount(async () => {
+      // Simulate an asynchronous login check
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // Check if the user is logged in in the browser storage
+      const isLoggedIn = localStorage.getItem('isLoggedIn');
+      login = isLoggedIn === 'true';
+      isLoading = false;
 
-  onMount(async () => {
-    // Simulate an asynchronous login check
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+      // get cat posts 
+      const catPosts = await fetchCatPostFromDB();
+      catPostList = [].concat(...Object.values(catPosts));
 
-    // Check if the user is logged in in the browser storage
-    const isLoggedIn = localStorage.getItem('isLoggedIn');
-    login = isLoggedIn === 'true';
-    isLoading = false;
-  });
+      // put cat posts in an array [{name: .. , ...}, {name: .., ...}, ...]
+      console.log(catPostList);
+    });
 
-  function updateLogInStatus(event) {
-    login = event.detail;
-    // Update the login status in the browser storage
-    localStorage.setItem('isLoggedIn', login.toString());
-  }
+    function updateLogInStatus(event) {
+      login = event.detail;
+      // Update the login status in the browser storage
+      localStorage.setItem('isLoggedIn', login.toString());
+    }
 
-  function updateSeePosts(event) {
-    post = event.detail;
-  }
+    function updateSeePosts(event) {
+      post = event.detail;
+    }
 </script>
 
 {#if login}
@@ -67,10 +104,10 @@
         <img style="height: 80%; width: auto; margin-left: 2%; margin-right: auto;" src="https://cdn-icons-png.flaticon.com/512/4225/4225690.png" alt="">
       </div>
       <div class="posts__container"> 
-        {#each dummyPosts.filter((post) => {
+        {#each catPostList.filter((post) => {
           if (post.name == $currentPosts) {return post;}
-        }) as {name, picture, caption}}
-        <Posts name = {name} picture = {picture} caption = {caption} />
+        }) as {avatar, image, latitude, likeCount, longitude, name, caption}}
+        <Posts name = {name} picture = {image} caption = {caption} />
         {/each}
       </div>
     </div>
