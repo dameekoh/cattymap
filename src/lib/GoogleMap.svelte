@@ -52,10 +52,12 @@
 
   let radius = 300;
   let catProfiles = [];
+  let catProfilesWithinRange = new Set();
+  let catProfilesonLegend = [];
 
 function onRadiusChange(event){
   displayCatMarkers();
-  range.setRadius(radius)
+  range.setRadius(radius);
 }
 
   /**
@@ -130,6 +132,7 @@ function onRadiusChange(event){
   
   onMount(async () => {
     catProfiles = await fetchCatProfileFromDB();
+    catProfilesonLegend = catProfiles;
     const script = document.createElement('script');
     script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBEQ0yl78oVx87pxPJd8Jrt-LOp7wPmTLA&libraries=geometry`;
     script.async = true;
@@ -290,10 +293,17 @@ function displayCatMarkers(){
     const distance = google.maps.geometry.spherical.computeDistanceBetween(currentLatLng, catLatLng);
     if (distance <= radius && $filter[marker.getTitle()]) {
       marker.setMap(map);
+      catProfilesWithinRange.add(marker.getTitle());
     }else {
       marker.setMap(null);
     }
   }
+  catProfilesonLegend = catProfiles.filter((profile) => {
+    if(catProfilesWithinRange.has(profile.name)){
+      console.log(profile.name);
+      return profile;
+    }
+  });
 }
 
 
@@ -435,7 +445,7 @@ async function proposeCat() {
     <h2 class="card-title text-sm text-slate-500">Cats</h2>
     <div class="ledger__container">
       <div class="ledger__scroll">
-        {#each catProfiles as { name, avatar }}
+        {#each catProfilesonLegend as { name, avatar }}
           <LedgerProfile avatar = { avatar } name = { name } on:filterChange = {displayCatMarkers}/>
         {/each}
       </div>
