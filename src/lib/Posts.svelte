@@ -418,7 +418,6 @@
     align-items: flex-start;
     justify-content:last baseline;
     flex-direction: column;
-
 }
 
 @keyframes like-heart-animation {

@@ -449,6 +449,19 @@ async function proposeCat() {
     height: 20vh;
   }
 
+  .ledger__container {
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .button__container {
+    width: 100%;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    margin-top: 5%;
+  }
 </style>
 
 <div bind:this="{mapElement}" class="map-container">
@@ -464,15 +477,17 @@ async function proposeCat() {
 
   <div bind:this="{legendElement}" class="card fixed left-1 shadow-xl p-3 ml-7 space-y-2 bg-white items-left overflow-x-visible mb-7">
     <h2 class="card-title text-sm text-slate-500">Cats</h2>
-    <div class="container">
+    <div class="ledger__container">
       <div class="ledger__scroll">
         {#each catProfiles as { name, avatar }}
           <LedgerProfile avatar = { avatar } name = { name } on:filterChange = {displayCatMarkers}/>
         {/each}
       </div>
-      <button class="btn btn-active btn-secondary justify-self-end" on:click={proposeCat}>
-        <svg style="color: white" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16"> <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" fill="white"></path> </svg>
-      </button>
+      <div class="button__container">
+        <button class="btn btn-xs btn-block btn-active btn-secondary" style="line-height: auto;" on:click={proposeCat}>
+          <svg style="color: white" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16"> <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" fill="white"></path> </svg>
+        </button>
+      </div>
     </div>
   </div>
 </div>
