@@ -1,62 +1,3 @@
-<style>
-
-  .selected-image, .filter-card {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .selected-image {
-    width: 100%;
-    height: 35vh;
-  }
-
-  .filter-card {
-    flex: 0 0 auto;
-    width: 25vw; /* Adjust the width as needed */
-    height: 25vh; /* Adjust the height as needed */
-    margin-right: 1em;
-  }
-
-  .filter-card h2 {
-    margin-top: 0.5em; /* Add spacing between image and h2 tag */
-  }
-
-  .filters-container {
-    display: flex;
-    overflow-x: auto;
-    white-space: nowrap;
-    width: 100%;
-    -webkit-overflow-scrolling: touch; /* Smooth scrolling for touch devices */
-  }
-
-  .image {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain; /* Adjust the object-fit property as needed */
-  }
-
-  .select,
-  .textarea,
-  .btn {
-    margin-top: 1em; /* Add spacing between elements */
-  }
-
-  .form-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-  }
-
-  @media screen and (min-width: 768px) and (max-width: 1024px) {
-    .form-container {
-      flex-direction: column;
-    }
-  }
-</style>
-
 <script>
   import { onMount } from 'svelte';
   import { initializeApp } from "firebase/app";
@@ -309,3 +250,63 @@
   <button class="btn btn-secondary w-60" on:click={handlePublish}>Publish</button>
   
   </div>
+
+
+  <style>
+
+    .selected-image, .filter-card {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+  
+    .selected-image {
+      width: 100%;
+      height: 35vh;
+    }
+  
+    .filter-card {
+      flex: 0 0 auto;
+      width: 25vw; /* Adjust the width as needed */
+      height: 25vh; /* Adjust the height as needed */
+      margin-right: 1em;
+    }
+  
+    .filter-card h2 {
+      margin-top: 0.5em; /* Add spacing between image and h2 tag */
+    }
+  
+    .filters-container {
+      display: flex;
+      overflow-x: auto;
+      white-space: nowrap;
+      width: 100%;
+      -webkit-overflow-scrolling: touch; /* Smooth scrolling for touch devices */
+    }
+  
+    .image {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain; /* Adjust the object-fit property as needed */
+    }
+  
+    .select,
+    .textarea,
+    .btn {
+      margin-top: 1em; /* Add spacing between elements */
+    }
+  
+    .form-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+  
+    @media screen and (min-width: 768px) and (max-width: 1024px) {
+      .form-container {
+        flex-direction: column;
+      }
+    }
+  </style>
