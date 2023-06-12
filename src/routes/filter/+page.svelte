@@ -59,6 +59,7 @@
   let selectedCatName = ''; 
   let catAvatar;
   let caption = '';
+  let catProfiles = [];
 
   const loadImage = (src) => {
     fileUrl = src;
@@ -94,6 +95,7 @@
             image: catDataObj.image,
             likeCount: catDataObj.likeCount,
             caption: catDataObj.caption,
+            filter: selectedFilter 
           },
         };
         update(catPostRef, dataToUpdate)
@@ -106,6 +108,17 @@
       .catch((error) => {
         console.error(error);
       });
+  }
+
+  function fetchCatProfileFromDB() {
+    return new Promise((resolve, reject) => {
+      onValue(catProfileRef, (snapshot) => {
+        const data = snapshot.val();
+        resolve(data);
+      }, (error) => {
+        reject(error);
+      });
+    });
   }
 
   async function savePicture(data, blobURL) {
@@ -174,6 +187,9 @@
     })
   }
 
+  onMount(async() => {
+    catProfiles = await fetchCatProfileFromDB();
+  })
 
 </script>
 <!-- <GoogleMap bind:this={gmap} bind:currentPosition />; -->
@@ -240,9 +256,9 @@
 <div class="form-container">
   <select class="select select-secondary w-60"  bind:value={selectedCatName}>
     <option disabled selected>Select the cat</option>
-    <option>Damir</option>
-    <option>Zhi Lin</option>
-    <option>Punn</option>
+    {#each catProfiles as { name, avatar }}
+          <option> { name }</option> 
+        {/each}
   </select>
   
   <textarea class="textarea textarea-secondary w-60" placeholder="Description" bind:value={caption}></textarea>
