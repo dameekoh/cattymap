@@ -212,50 +212,6 @@ function onRadiusChange(event){
       map.setCenter(new google.maps.LatLng(y, x));
     });
 
-    //get Lat-Long based on mouse click 
-    //and input name (for testing)
-    map.addListener("click", (mapsMouseEvent) => {
-      const position = mapsMouseEvent.latLng.toJSON();
-
-      //close existing window
-      catWindow?.close();
-      inputName?.close();
-
-      //add input field
-      var contentString = '<div id="content">'+
-                          '<select name="catName" id="catName" class="select bg-white">'+
-                          '<option value=0>- select cat -</option>'+
-                          '<option value="Damir">Damir</option>'+
-                          '<option value="Zhi Lin">Zhi Lin</option>'+
-                          '<option value="Punn">Punn</option>'+
-                          '</select>'+
-                          '</div>';
-      
-      inputName = new google.maps.InfoWindow({
-                        position: mapsMouseEvent.latLng,
-                        content: contentString
-                      });
-      
-      inputName.open(map);
-
-      //listen to the input
-      google.maps.event.addListener(inputName, 'domready', function () {
-          const catName = document.getElementById('catName');
-
-          catName.oninput = function() {
-            const name = catName.value; 
-            const avatar = (name == 'Zhi Lin') ? ("https://cdn.iconscout.com/icon/premium/png-512-thumb/abyssinnian-cat-1975262-1664592.png?f=avif&w=256")
-                          :(name == 'Damir') ? ("https://cdn.iconscout.com/icon/premium/png-512-thumb/american-shorthair-1975261-1664591.png?f=avif&w=256")
-                          :(name == 'Punn') ? ("https://cdn.iconscout.com/icon/premium/png-512-thumb/nebelung-1975276-1664606.png?f=avif&w=256")
-                          : (null);
-            
-            sendToDB({postID: new Date(), name: name, ...position, avatar: avatar, image: "None", likeCount: 0});
-            inputName.close();
-            // addCatMarkers();
-          }
-      });
-    });
-
     // Add the legend to the map
     map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(legendElement);
     // Add map
