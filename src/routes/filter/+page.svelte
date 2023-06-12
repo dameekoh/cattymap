@@ -1,6 +1,5 @@
 <script>
   import { onMount } from 'svelte';
-  import { initializeApp } from "firebase/app";
   import { goto } from '$app/navigation';
   import { selectedFile } from '../../stores/image';
   import {
