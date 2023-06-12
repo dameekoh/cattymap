@@ -153,6 +153,7 @@
             image: catDataObj.image,
             likeCount: catDataObj.likeCount,
             caption: catDataObj.caption,
+            filter: selectedFilter 
           },
         };
         update(catPostRef, dataToUpdate)

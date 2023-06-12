@@ -16,13 +16,14 @@
     export let picture = "https://media-cldnry.s-nbcnews.com/image/upload/rockcms/2022-08/220805-domestic-cat-mjf-1540-382ba2.jpg";
     export let caption = "Hi this is cat";
     export let key;
+    export let filter;
     let liked = false;
-    let likes = 0
-    ;
+    let likes = 0;
     let newComment = "";
     let useruid;
     let username;
     let post;
+
 
     const firebaseConfig = {
     apiKey: "AIzaSyBEQ0yl78oVx87pxPJd8Jrt-LOp7wPmTLA",
@@ -259,6 +260,8 @@
 
     
 </script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cssgram/0.1.10/cssgram.min.css">
+
 
 <svg
     aria-hidden="true"
@@ -278,7 +281,7 @@
 
 <div class="card bordered flex flex-col items-center shadow-md overflow-hidden mb-2" on:dblclick={like}>
     <div class="picture-container">
-        <div class="picture" style="background-image: url({ picture });">
+        <div class="picture {filter}" style="background-image: url({ picture }); class: image {filter}">
             <svg class="icon icon-heart {liked ? 'like' : ''}  inline-block w-32 opacity-0 fill-current text-white">
                 <use xlink:href="#icon-heart"></use>
             </svg>

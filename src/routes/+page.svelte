@@ -5,7 +5,7 @@
   import PostPic from '../lib/PostStorageandDB.svelte';
   import Posts from '../lib/Posts.svelte';
   import { onMount } from 'svelte';
-  import { filter } from "../lib/store"
+  // import { filter } from "../lib/store"
   import { currentPosts } from '../lib/store';
   import { ref, getDatabase, onValue } from "firebase/database";
   import { initializeApp } from "firebase/app";
@@ -82,8 +82,8 @@
     <div class="posts__container"> 
       {#each catPostList.filter((post) => {
         if (post.name == $currentPosts) {return post;}
-      }) as {key, avatar, image, latitude, likeCount, longitude, name, caption}}
-      <Posts key={key} name = {name} picture = {image} caption = {caption} />
+      }) as {key, avatar, image, latitude, likeCount, longitude, name, caption, filter}}
+      <Posts key={key} name = {name} picture = {image} caption = {caption} filter = { filter }/>
       {/each}
     </div>
   </div>
