@@ -125,10 +125,7 @@ function onRadiusChange(event){
       directionsService,
       directionsRenderer;
 
-   let currentPosition = {
-    lat: 36.368865, 
-    lng: 127.362103
-};
+   let currentPosition;
   
   onMount(async () => {
     catProfiles = await fetchCatProfileFromDB();
@@ -224,8 +221,10 @@ function onRadiusChange(event){
     map.controls[google.maps.ControlPosition.LEFT_TOP].push(slider);
     addUserMarker();
     setMapCenter();
-    setCurrentPosition();
-    addCatMarkers();
+    (async () => {
+      await setCurrentPosition();
+      addCatMarkers();
+    })();
     };
 
     setInterval(() => {
@@ -277,7 +276,6 @@ function onRadiusChange(event){
                    '</div>');
           catWindow.open(map, marker);
         });
-
         markers.push(marker);
       }
       displayCatMarkers();
@@ -288,6 +286,7 @@ function onRadiusChange(event){
 
 function displayCatMarkers(){
   for (const [key, marker] of Object.entries(markers)){
+    // console.log(currentPosition);
     const currentLatLng = new google.maps.LatLng(currentPosition.lat, currentPosition.lng);
     const catLatLng = marker.getPosition();
     const distance = google.maps.geometry.spherical.computeDistanceBetween(currentLatLng, catLatLng);
@@ -300,7 +299,6 @@ function displayCatMarkers(){
   }
   catProfilesonLegend = catProfiles.filter((profile) => {
     if(catProfilesWithinRange.has(profile.name)){
-      console.log(profile.name);
       return profile;
     }
   });
@@ -335,17 +333,31 @@ function addUserMarker(){
 
 async function setCurrentPosition(){
   if (navigator.geolocation) {
-      await navigator.geolocation.getCurrentPosition(
-        (position) => {
-          currentPosition = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          };
-          userMarker.setMap(map);
-          userMarker.setPosition(currentPosition);
-          range.setCenter(currentPosition);
-        }
-      );
+      // await navigator.geolocation.getCurrentPosition(
+      //   (position) => {
+      //     currentPosition = {
+      //       lat: position.coords.latitude,
+      //       lng: position.coords.longitude,
+      //     };
+      //     userMarker.setMap(map);
+      //     userMarker.setPosition(currentPosition);
+      //     range.setCenter(currentPosition);
+      //   }
+      // );
+      try {
+      const position = await new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject);
+      });
+      currentPosition = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+      };
+      userMarker.setMap(map);
+      userMarker.setPosition(currentPosition);
+      range.setCenter(currentPosition);
+    } catch (error) {
+      console.error('Error getting current position:', error);
+    }
      
   } else {
     return null
