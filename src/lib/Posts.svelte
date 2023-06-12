@@ -415,6 +415,7 @@
 .comment__container {
     width: 100%;
     display: flex;
+    align-items: flex-start;
     justify-content:last baseline;
     flex-direction: column;
 
