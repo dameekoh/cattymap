@@ -212,6 +212,50 @@ function onRadiusChange(event){
       map.setCenter(new google.maps.LatLng(y, x));
     });
 
+    //get Lat-Long based on mouse click 
+    //and input name (for testing)
+    map.addListener("click", (mapsMouseEvent) => {
+      const position = mapsMouseEvent.latLng.toJSON();
+
+      //close existing window
+      catWindow?.close();
+      inputName?.close();
+
+      //add input field
+      var contentString = '<div id="content">'+
+                          '<select name="catName" id="catName" class="select bg-white">'+
+                          '<option value=0>- select cat -</option>'+
+                          '<option value="Damir">Damir</option>'+
+                          '<option value="Zhi Lin">Zhi Lin</option>'+
+                          '<option value="Punn">Punn</option>'+
+                          '</select>'+
+                          '</div>';
+      
+      inputName = new google.maps.InfoWindow({
+                        position: mapsMouseEvent.latLng,
+                        content: contentString
+                      });
+      
+      inputName.open(map);
+
+      //listen to the input
+      google.maps.event.addListener(inputName, 'domready', function () {
+          const catName = document.getElementById('catName');
+
+          catName.oninput = function() {
+            const name = catName.value; 
+            const avatar = (name == 'Zhi Lin') ? ("https://cdn.iconscout.com/icon/premium/png-512-thumb/abyssinnian-cat-1975262-1664592.png?f=avif&w=256")
+                          :(name == 'Damir') ? ("https://cdn.iconscout.com/icon/premium/png-512-thumb/american-shorthair-1975261-1664591.png?f=avif&w=256")
+                          :(name == 'Punn') ? ("https://cdn.iconscout.com/icon/premium/png-512-thumb/nebelung-1975276-1664606.png?f=avif&w=256")
+                          : (null);
+            
+            sendToDB({postID: new Date(), name: name, ...position, avatar: avatar, image: "None", likeCount: 0});
+            inputName.close();
+            // addCatMarkers();
+          }
+      });
+    });
+
     // Add the legend to the map
     map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(legendElement);
     // Add map
@@ -405,19 +449,6 @@ async function proposeCat() {
     height: 20vh;
   }
 
-  .ledger__container {
-    height: fit-content;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .button__container {
-    width: 100%;
-    height: auto;
-    display: flex;
-    justify-content: center;
-    margin-top: 5%;
-  }
 </style>
 
 <div bind:this="{mapElement}" class="map-container">
@@ -433,17 +464,15 @@ async function proposeCat() {
 
   <div bind:this="{legendElement}" class="card fixed left-1 shadow-xl p-3 ml-7 space-y-2 bg-white items-left overflow-x-visible mb-7">
     <h2 class="card-title text-sm text-slate-500">Cats</h2>
-    <div class="ledger__container">
+    <div class="container">
       <div class="ledger__scroll">
         {#each catProfiles as { name, avatar }}
           <LedgerProfile avatar = { avatar } name = { name } on:filterChange = {displayCatMarkers}/>
         {/each}
       </div>
-      <div class="button__container">
-        <button class="btn btn-xs btn-block btn-active btn-secondary" style="line-height: auto;" on:click={proposeCat}>
-          <svg style="color: white" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16"> <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" fill="white"></path> </svg>
-        </button>
-      </div>
+      <button class="btn btn-active btn-secondary justify-self-end" on:click={proposeCat}>
+        <svg style="color: white" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16"> <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" fill="white"></path> </svg>
+      </button>
     </div>
   </div>
 </div>
