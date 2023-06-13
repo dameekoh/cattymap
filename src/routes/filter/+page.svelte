@@ -155,8 +155,8 @@
 
   function handlePublish() {
     const nameQuery = query(catProfileRef, orderByChild('name'), equalTo(selectedCatName))
-
     get(nameQuery).then((snapshot) => {
+      console.log(snapshot.exists());
       if (snapshot.exists()) {
        const catData = snapshot.val();
        const catKey = Object.keys(catData)[0];
@@ -257,8 +257,8 @@
   <select class="select select-secondary w-60"  bind:value={selectedCatName}>
     <option disabled selected>Select the cat</option>
     {#each catProfiles as { name, avatar }}
-          <option> { name }</option> 
-        {/each}
+          <option>{name}</option> 
+    {/each}
   </select>
   
   <textarea class="textarea textarea-secondary w-60" placeholder="Description" bind:value={caption}></textarea>
