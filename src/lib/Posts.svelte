@@ -130,6 +130,7 @@
     } 
     function listenForCommentUpdates() {
         onValue(commentRef, async(snapshot) => {
+        const commentDB = snapshot.val();
         // Update the comments based on the updated commentDB
         location.reload()
      }, (error) => {
