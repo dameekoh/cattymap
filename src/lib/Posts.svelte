@@ -128,6 +128,14 @@
         const mergedArray = [...comments.map(item => ({ ...item, type: 'comment' })), ...userComments.map(item => ({ ...item, type: 'userComment' }))];
         sortedComments = mergedArray.sort((a, b) => a.timestamp - b.timestamp);
     } 
+    function listenForCommentUpdates() {
+        onValue(commentRef, async(snapshot) => {
+        // Update the comments based on the updated commentDB
+        location.reload()
+     }, (error) => {
+        console.error("Error listening for comment updates:", error);
+    });
+}
 
     function timeAgo(timestamp) {
         const now = Date.now();
@@ -223,6 +231,7 @@
         await getOwnerComments();
         await getOtherComments();
         arrangeComments();
+        listenForCommentUpdates();
     })
 
     // Check if SpeechRecognition is available
