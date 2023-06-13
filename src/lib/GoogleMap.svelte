@@ -229,6 +229,7 @@ function onRadiusChange(event){
 
     setInterval(() => {
       setCurrentPosition();
+      addCatMarkers();
     }, 500);
 
     document.head.appendChild(script);
