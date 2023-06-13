@@ -129,11 +129,11 @@
         sortedComments = mergedArray.sort((a, b) => a.timestamp - b.timestamp);
     } 
     function listenForCommentUpdates() {
-        onValue(commentRef, (snapshot) => {
+        onValue(commentRef, async (snapshot) => {
         const commentDB = snapshot.val();
         // Update the comments based on the updated commentDB
-        getOwnerComments();
-        getOtherComments();
+        await getOwnerComments();
+        await getOtherComments();
         arrangeComments();
      }, (error) => {
         console.error("Error listening for comment updates:", error);
