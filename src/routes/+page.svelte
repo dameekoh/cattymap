@@ -82,6 +82,8 @@
     <div class="posts__container"> 
       {#each catPostList.filter((post) => {
         if (post.name == $currentPosts) {return post;}
+      }).sort((a, b) => {
+        return b.key - a.key;
       }) as {key, avatar, image, latitude, likeCount, longitude, name, caption, filter}}
       <Posts key={key} name = {name} picture = {image} caption = {caption} filter = { filter }/>
       {/each}
