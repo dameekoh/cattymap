@@ -114,25 +114,34 @@
         
     }
 
-    async function getOwnerComments() {
+    // async function getOwnerComments() {
+    //     const commentDB = await fetchComment();
+    //     userComments = commentDB.filter(item => item.postNumber == key && item.username == username);
+    // }
+    
+    // async function getOtherComments() {
+    //     const commentDB = await fetchComment();
+    //     comments = commentDB.filter(item => item.postNumber == key && item.username != username);
+    // }
+
+    // function arrangeComments() {
+    //     const mergedArray = [...comments.map(item => ({ ...item, type: 'comment' })), ...userComments.map(item => ({ ...item, type: 'userComment' }))];
+    //     sortedComments = mergedArray.sort((a, b) => a.timestamp - b.timestamp);
+    // } 
+
+    async function getComments() {
         const commentDB = await fetchComment();
         userComments = commentDB.filter(item => item.postNumber == key && item.username == username);
-    }
-    
-    async function getOtherComments() {
-        const commentDB = await fetchComment();
         comments = commentDB.filter(item => item.postNumber == key && item.username != username);
-    }
-
-    function arrangeComments() {
         const mergedArray = [...comments.map(item => ({ ...item, type: 'comment' })), ...userComments.map(item => ({ ...item, type: 'userComment' }))];
         sortedComments = mergedArray.sort((a, b) => a.timestamp - b.timestamp);
-    } 
+    }
+    
     function listenForCommentUpdates() {
         onValue(commentRef, async(snapshot) => {
         const commentDB = snapshot.val();
         // Update the comments based on the updated commentDB
-        location.reload()
+        await getComments();
      }, (error) => {
         console.error("Error listening for comment updates:", error);
     });
@@ -212,9 +221,7 @@
                 .then(async () => {
                     newComment = "";
                     showComments = true; 
-                    await getOwnerComments();
-                    await getOtherComments();
-                    arrangeComments();
+                    await getComments();
                 })
                 .catch((error) => {
                     console.error("Error updating database:", error);
@@ -229,9 +236,7 @@
     onMount(async () => {
         await getUserName();
         await getLikes();
-        await getOwnerComments();
-        await getOtherComments();
-        arrangeComments();
+        await getComments();
         listenForCommentUpdates();
     })
 
