@@ -229,7 +229,14 @@ function onRadiusChange(event){
 
     setInterval(() => {
       setCurrentPosition();
-      displayCatMarkers();
+      for (const [key, marker] of Object.entries(markers)){
+        const currentLatLng = new google.maps.LatLng(currentPosition.lat, currentPosition.lng);
+        const catLatLng = marker.getPosition();
+        const distance = google.maps.geometry.spherical.computeDistanceBetween(currentLatLng, catLatLng);
+        if (distance > radius) {
+          marker.setMap(null);
+        }
+      }
      
     }, 500);
 
