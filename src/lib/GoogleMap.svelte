@@ -463,7 +463,7 @@ async function proposeCat() {
 
 
   <div bind:this="{slider}" class="slider">
-    <input type="range" min="30" max="300" step="10" bind:value={radius} on:input={onRadiusChange} class="range range-secondary" />
+    <input type="range" min="30" max="1000" step="10" bind:value={radius} on:input={onRadiusChange} class="range range-secondary" />
   </div>
 
   <div bind:this="{legendElement}" class="card fixed left-1 shadow-xl p-3 ml-7 space-y-2 bg-white items-left overflow-x-visible mb-7">
