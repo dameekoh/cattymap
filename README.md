@@ -51,7 +51,19 @@ Our platform provides users with the opportunity to share cat pictures while als
 [to-do] 
 
 ## Work Distribution  
-[to-do]
+| Features      | Contributor |
+| ----------- | ----------- |
+| Sign up/log in Frontend     | Damir       |
+| Sign up/log in Backend   | Zhi Lin       |
+| Google Map | Punn      |
+| Location Tracking | Punn      |
+| Cats Within Range| Punn and Zhi Lin     |
+| Legend and Filter| Punn and Zhi Lin     |
+| Posting Pic Feature Frontend | Damir      |
+| Posting Pic Feature Backend |  Zhi Lin     |
+| Feed Frontend | Damir      |
+| Feed Backend |  Zhi Lin     |
+
 
 ## Main Challenges  
 [to-do]  
