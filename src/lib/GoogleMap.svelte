@@ -469,7 +469,6 @@ async function proposeCat() {
         {#each catProfilesonLegend as { name, avatar }}
           <LedgerProfile avatar = { avatar } name = { name } on:filterChange = {displayCatMarkers}/>
         {/each}
-        <LedgerProfile isCat = {false} on:filterChange = {displayCatMarkers}/>
       </div>
       <div class="button__container">
         <button class="btn btn-xs btn-block btn-active btn-secondary" style="line-height: auto;" on:click={proposeCat}>
