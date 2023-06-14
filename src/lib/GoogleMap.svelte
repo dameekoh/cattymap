@@ -4,7 +4,7 @@
 <script>
   import { onMount } from 'svelte';
   import { createEventDispatcher } from 'svelte';
-  import { currentPosts } from './store';
+  import { currentPosts, logInState } from './store';
   import { initializeApp } from "firebase/app";
   import { ref, get, set, getDatabase, onValue, update } from 'firebase/database';
   import LedgerProfile from './LedgerProfile.svelte';
@@ -294,14 +294,17 @@ function onRadiusChange(event){
 }
 
 function displayCatMarkers(){
+  catProfilesWithinRange = new Set();
   for (const [key, marker] of Object.entries(markers)){
     // console.log(currentPosition);
     const currentLatLng = new google.maps.LatLng(currentPosition.lat, currentPosition.lng);
     const catLatLng = marker.getPosition();
     const distance = google.maps.geometry.spherical.computeDistanceBetween(currentLatLng, catLatLng);
+    if (distance <= radius){
+      catProfilesWithinRange.add(marker.getTitle());
+    };
     if (distance <= radius && $filter[marker.getTitle()]) {
       marker.setMap(map);
-      catProfilesWithinRange.add(marker.getTitle());
     }else {
       marker.setMap(null);
     }
@@ -311,6 +314,7 @@ function displayCatMarkers(){
       return profile;
     }
   });
+  console.log(catProfilesonLegend);
 }
 
 
