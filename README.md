@@ -34,6 +34,11 @@ Our platform provides users with the opportunity to share cat pictures while als
    - HTML 
    - CSS
    - Sveltekit 
+   - DaisyUI
+   - Tailwind
+   - CSSgram
+   - Cat As A Service
+   - Javascript
 2. Back-end 
    - Firebase Realtime Database 
    - Firebase Storage
