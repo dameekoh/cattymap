@@ -54,16 +54,13 @@ Our platform provides users with the opportunity to share cat pictures while als
 | Features      | Contributor |
 | ----------- | ----------- |
 | Sign up/log in Frontend     | Damir       |
-| Sign up/log in Backend   | Zhi Lin       |
 | Google Map | Punn      |
 | Location Tracking | Punn      |
 | Cats Within Range| Punn and Zhi Lin     |
 | Legend and Filter| Punn and Zhi Lin     |
-| Posting Pic Feature Frontend | Damir      |
-| Posting Pic Feature Backend |  Zhi Lin     |
-| Feed Frontend | Damir      |
-| Feed Backend |  Zhi Lin     |
-
+| Posting Pic Feature | Damir      |
+| Feed | Damir and Zhi Lin     |
+| Backend ( Database and Storage ) |  Zhi Lin     |
 
 ## Main Challenges  
 [to-do]  
