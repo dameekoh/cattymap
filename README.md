@@ -30,6 +30,9 @@ Our platform provides users with the opportunity to share cat pictures while als
   <img src = 'ReadMepics/photo2.jpg' alt="See Posts" style="width: 150px">
 
 ## Main Architecture  
+
+<img src = 'ReadMepics/IMG_6022.png' alt="See Posts" style="width: 400px">  
+
 1. Front-end 
    - HTML 
    - CSS
