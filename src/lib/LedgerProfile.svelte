@@ -3,8 +3,8 @@
     import { filter } from "./store"
     import { createEventDispatcher } from "svelte";
 
-    export let avatar = "https://cdn.iconscout.com/icon/premium/png-512-thumb/american-shorthair-1975261-1664591.png?f=avif&w=256";
-    export let name = "no name cat";
+    export let avatar = null;
+    export let name = "";
 
     const dispatcher = createEventDispatcher();
     let check = true;
@@ -52,10 +52,10 @@
 </style>
 
 <div class="ledgerSection">
+    {#if (avatar)}
     <div class="profile-pic-container">
         <img class="profile-pic" src={avatar} alt=""/>
     </div>
-
     <div class="name"> {name} </div>
     <div class="form-control justify-self-end">
         <label class="cursor-pointer label">
@@ -65,6 +65,20 @@
                 }}/>
         </label>
     </div>
+    {:else}
+    <div class="profile-pic-container" style="
+        width: 40px;
+        border-radius: 9999px;
+        position: relative;
+        background-color: white;
+        box-shadow: none;
+        margin-left: 2px;
+        margin-top: 2px;
+        height: 40px;">
+        <div class="profile__pic"></div>
+    </div>
+    {/if}
+
 </div>
 
 
