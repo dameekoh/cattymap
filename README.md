@@ -7,6 +7,8 @@ Zhi Lin Yap
 [CattyMap Git Repository](https://github.com/dameekoh/cattymap)
 ### **Demo:**
 [CattyMap App](https://develop-cattymap.netlify.app)
+### **Video link:**
+
 
 ___
 ## Description 
@@ -51,7 +53,31 @@ Our platform provides users with the opportunity to share cat pictures while als
    - navigator.geolocation API
   
 ## Logical Components  
-[to-do] 
+### In /src/lib, 
+- GoogleMap.svelte 
+  + Map and Markers 
+    - Using *GoogleMap API*
+    - Fetch cat posts data from *Firebase Realtime Database* and show their avatars as markers 
+  + CatsWithinRange feature implemented
+    - *CSS* slider 
+    - Find distance between user's location and cats' posts location and check if they are within the radius specified. 
+- LedgerProfile.svelte
+  + Here is where we make the legend component 
+- LogIn.svelte 
+  + We use *Firebase Email and Password Authentication*
+- Posts.svelte
+  + Our post component
+  + Fetch posts from *Firebase Realtime Database*
+  + Update likes and comments to *Firebase Realtime database*
+
+### In /src/routes,
+- postPic > +page.svelte
+  + Use CSSgram for filters 
+  + Send image to *Firebase Storage*, get its link and send to *Firebase Realtime Database*
+- propose > +page.svelte 
+  + Here is where we allow users to propose new cats.
+- +page.svelte
+  + Here is where we render our feed.
 
 ## Work Distribution  
 | Features      | Contributor |
@@ -65,10 +91,17 @@ Our platform provides users with the opportunity to share cat pictures while als
 | Feed | Damir and Zhi Lin     |
 | Backend ( Database and Storage ) |  Zhi Lin     |
 
-## Main Challenges  
+## Main Challenges and How We Overcame Them
 - Making sure that cats within range and cats on legend changes according to users' location when they are moving. 
-- Dynamic app updates based on user interactions. 
+  + Solution: Take advantage of the reactivity in Svelte, where they automatically update the DOM based on the changes to the state variables.
+- Dynamic app updates based on user interactions.
+  + Solution: Use onValue when we fetch from database 
 - Making a multi-page app in SvelteKit. 
+  + Solution: We learned it! 
+- Promises and asynchronous functions can be confusing. 
+  + Solution: We understand it better now, but sometimes we have to go through trial and error. 
+- Have difficulties uploading pictures to Firebase 
+  + Solution: We cannot upload pictures to Firebase using the school WiFi. 
 
 ## New things learnt 
 - navigator.geolocation API 
