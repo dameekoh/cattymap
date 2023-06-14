@@ -1,7 +1,15 @@
 <script>
-    export let profilePic = "https://cdn.iconscout.com/icon/premium/png-512-thumb/american-shorthair-1975261-1664591.png?f=avif&w=256";
+    // import { createEventDispatcher } from "svelte";
+    import { filter } from "./store"
+    import { createEventDispatcher } from "svelte";
+
+    export let avatar = "https://cdn.iconscout.com/icon/premium/png-512-thumb/american-shorthair-1975261-1664591.png?f=avif&w=256";
     export let name = "no name cat";
-    export let checked = true; 
+
+    const dispatcher = createEventDispatcher();
+    let check = true;
+    $filter[name] = check;
+
 </script>
 
 <style>
@@ -11,6 +19,7 @@
         grid-template-columns: repeat(3, 45px);
         justify-items: start;
         height: 33.33%;
+        padding-bottom: 5%;
     }
 
     .profile-pic-container {
@@ -21,7 +30,7 @@
         box-shadow: 0px 0px 3.5px #e5b4b3;
         margin-left: 2px;
         margin-top: 2px;
-        height: 45px;
+        height: 40px;
     }
 
     .profile-pic {
@@ -36,25 +45,24 @@
     .name {
         align-self: center;
         justify-self: start;
-        margin-bottom: 25%;
         margin-left: 25%;
+        white-space: nowrap;
     }
 
 </style>
 
 <div class="ledgerSection">
     <div class="profile-pic-container">
-        <img class="profile-pic" src={profilePic} />
+        <img class="profile-pic" src={avatar} alt=""/>
     </div>
 
     <div class="name"> {name} </div>
     <div class="form-control justify-self-end">
         <label class="cursor-pointer label">
-            {#if checked}
-                <input type="checkbox" checked class="checkbox checkbox-secondary " />
-            {:else}
-                <input type="checkbox" class="checkbox checkbox-secondary " />
-            {/if}
+                <input type="checkbox" class="checkbox checkbox-secondary " bind:checked={check} on:change = {() => {
+                    $filter[name] = check;
+                    dispatcher("filterChange")
+                }}/>
         </label>
     </div>
 </div>

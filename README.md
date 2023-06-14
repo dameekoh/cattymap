@@ -1,38 +1,81 @@
-# create-svelte
+# ID311 Final Project: CattyMap
+### **Team members:** 
+Damir Zhumatayev  
+Punn Lertjaturaphat  
+Zhi Lin Yap  
+### **Git Repository:**
+[CattyMap Git Repository](https://github.com/dameekoh/cattymap)
+### **Demo:**
+[CattyMap App](https://develop-cattymap.netlify.app)
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+___
+## Description 
+Our platform provides users with the opportunity to share cat pictures while also identifying the locations where those pictures were taken. Essentially, it can be described as a social media platform specifically designed for cats.
 
-## Creating a project
+### **Interactions:**
+- Users can sign up for an account or log in to an existing account.   
+- Users have the flexibility to customize the range within which they prefer to view the cats.  
+  <img src = 'ReadMepics/IMG_6011.jpg' alt="Adjust range" style="width: 150px">
+  <img src = 'ReadMepics/IMG_6010.jpg' alt="Adjust range" style="width: 150px">  
+- Users can filter the cats they want to see.  
+  <img src = 'ReadMepics/filter.png' alt="Filter cats" style="width: 150px">
+- Users can click on the cat and see the posts of that cat.  
+  <img src = 'ReadMepics/IMG_6013.jpg' alt="See Posts" style="width: 150px">
+  <img src = 'ReadMepics/IMG_6014.jpg' alt="See Posts" style="width: 150px">
+- Users can share those photos to Whatsapp, Twitter and Instagram.  
+- Users can double click or says *"meow"* to like a post.  
+- Users can comment on posts. 
+- Users can post pictures! Please post a picture of a *real* cat, choose a filter, and write something nice.  
+  <img src = 'ReadMepics/photo.jpg' alt="See Posts" style="width: 150px">
+  <img src = 'ReadMepics/photo2.jpg' alt="See Posts" style="width: 150px">
 
-If you're seeing this, you've probably already done this step. Congrats!
+## Main Architecture  
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
+<img src = 'ReadMepics/IMG_6022.PNG' alt="See Posts" style="width: 400px">  
 
-# create a new project in my-app
-npm create svelte@latest my-app
-```
+1. Front-end 
+   - HTML 
+   - CSS
+   - SvelteKit 
+   - DaisyUI
+   - Tailwind
+   - CSSgram
+   - Cat As A Service
+   - Javascript
+2. Back-end 
+   - Firebase Realtime Database 
+   - Firebase Storage
+   - Firebase Authentication 
+3. API
+   - GoogleMap API  
+   - navigator.geolocation API
+  
+## Logical Components  
+[to-do] 
 
-## Developing
+## Work Distribution  
+| Features      | Contributor |
+| ----------- | ----------- |
+| Sign up/log in Frontend     | Damir       |
+| Google Map | Punn      |
+| Location Tracking | Punn      |
+| Cats Within Range| Punn and Zhi Lin     |
+| Legend and Filter| Punn and Zhi Lin     |
+| Posting Pic Feature | Damir      |
+| Feed | Damir and Zhi Lin     |
+| Backend ( Database and Storage ) |  Zhi Lin     |
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+## Main Challenges  
+- Making sure that cats within range and cats on legend changes according to users' location when they are moving. 
+- Dynamic app updates based on user interactions. 
+- Making a multi-page app in SvelteKit. 
 
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+## New things learnt 
+- navigator.geolocation API 
+  + Tracking location of user
+- Firebase 
+  + Send, fetch and query database 
+  + Save pictures to storage 
+- GoogleMap API  
+  + Set and remove markers on map 
+- SvelteKit 
