@@ -182,7 +182,7 @@
 
 @media (max-width: 428px){
   .app__container{
-    padding-bottom: 20%;
+    padding-bottom: 25%;
   }
 }
 
