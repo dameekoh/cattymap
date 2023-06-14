@@ -33,7 +33,7 @@ Our platform provides users with the opportunity to share cat pictures while als
 1. Front-end 
    - HTML 
    - CSS
-   - Sveltekit 
+   - SvelteKit 
    - DaisyUI
    - Tailwind
    - CSSgram
@@ -63,7 +63,9 @@ Our platform provides users with the opportunity to share cat pictures while als
 | Backend ( Database and Storage ) |  Zhi Lin     |
 
 ## Main Challenges  
-[to-do]  
+- Making sure that cats within range and cats on legend changes according to users' location when they are moving. 
+- Dynamic app updates based on user interactions. 
+- Making a multi-page app in SvelteKit. 
 
 ## New things learnt 
 - navigator.geolocation API 
@@ -73,3 +75,4 @@ Our platform provides users with the opportunity to share cat pictures while als
   + Save pictures to storage 
 - GoogleMap API  
   + Set and remove markers on map 
+- SvelteKit 
