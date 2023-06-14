@@ -21,7 +21,7 @@ Our platform provides users with the opportunity to share cat pictures while als
   <img src = 'ReadMepics/filter.png' alt="Filter cats" style="width: 150px">
 - Users can click on the cat and see the posts of that cat.  
   <img src = 'ReadMepics/IMG_6013.jpg' alt="See Posts" style="width: 150px">
-  <img src = 'ReadMepics/img_6014.jpg' alt="See Posts" style="width: 150px">
+  <img src = 'ReadMepics/IMG_6014.jpg' alt="See Posts" style="width: 150px">
 - Users can share those photos to Whatsapp, Twitter and Instagram.  
 - Users can double click or says *"meow"* to like a post.  
 - Users can comment on posts. 
