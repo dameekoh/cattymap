@@ -180,6 +180,12 @@
     100% { left: 50%; }
 }
 
+@media (max-width: 428px){
+  .app__container{
+    padding-bottom: 10%;
+  }
+}
+
 @media (max-width: 600px){
   .post__card{
     width: 100%;
