@@ -92,17 +92,28 @@ Our platform provides users with the opportunity to share cat pictures while als
 | Backend ( Database and Storage ) |  Zhi Lin     |
 
 ## Main Challenges and How We Overcame Them
-- Making sure that cats within range and cats on legend changes according to users' location when they are moving. 
+- Making sure that cats within range and cats on legend changes according to users' location when they are moving 
   + Solution: Take advantage of the reactivity in Svelte, where they automatically update the DOM based on the changes to the state variables.
-- Dynamic app updates based on user interactions.
+- Dynamic app updates based on user interactions
   + Solution: Use onValue when we fetch from database 
-- Making a multi-page app in SvelteKit. 
-  + Solution: We learned it! 
-- Promises and asynchronous functions can be confusing. 
-  + Solution: We understand it better now, but sometimes we have to go through trial and error. 
+- Routing - Navigating between different pages 
+  + Solution: Sveltekit 
+- Promises and asynchronous functions can be confusing
+  + Solution: We understand it better now, but sometimes we have to go through trial and error 
 - Have difficulties uploading pictures to Firebase 
   + Solution: We cannot upload pictures to Firebase using the school WiFi. 
-- Had a hard time styling the application to how we want it to look like 
+- Managing CSS Styling 
+  + Solution: daisyUI 
+- Deciding whether we want it to be a social media or game app
+  + Solution: We discussed it amongst ourselves and decided that social media is a better approach
+- Deciding the interaction. It is hard to come up with a fun and engaging interaction
+- Collaboration with git can be a little messy. We need to improve our collaborative practices
+- Integrating Camera and file input
+  + Solution: handle HTML requests with promises and use existing `sendDB()` function
+- Having filters on pictures 
+  + Solution: CSSgram 
+- We want to generate different cat pictures randomly on the register/log in page
+  + Solution: Cat As A Service 
 
 ## New things learnt 
 - navigator.geolocation API 
@@ -113,3 +124,11 @@ Our platform provides users with the opportunity to share cat pictures while als
 - GoogleMap API  
   + Set and remove markers on map 
 - SvelteKit 
+- Combining everything we learn in class into one application 
+
+## Future Improvements 
+- Display other users 
+- Try different Map API 
+- Donation system 
+- Bonus system: Increase slider range as the user posts more 
+- Optimize performance 
