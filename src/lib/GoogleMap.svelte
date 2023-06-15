@@ -407,7 +407,7 @@ function chooseFile() {
 async function handleFileChange(event) {
   const file = event.target.files[0];
   selectedFile.set(file);
-  await goto('filter');
+  await goto('postPic');
 }
 
 async function proposeCat() {
