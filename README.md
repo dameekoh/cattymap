@@ -103,7 +103,7 @@ Our platform provides users with the opportunity to share cat pictures while als
 - Have difficulties uploading pictures to Firebase 
   + Solution: We cannot upload pictures to Firebase using the school WiFi. 
 - Managing CSS Styling 
-  + Solution: daisyUI 
+  + Solution: daisyUI + tailwind
 - Deciding whether we want it to be a social media or game app
   + Solution: We discussed it amongst ourselves and decided that social media is a better approach
 - Deciding the interaction. It is hard to come up with a fun and engaging interaction
@@ -114,7 +114,8 @@ Our platform provides users with the opportunity to share cat pictures while als
   + Solution: CSSgram 
 - We want to generate different cat pictures randomly on the register/log in page
   + Solution: Cat As A Service 
-
+- Deliver value in the quickest time (teamwork)
+  + Solution: Scrum
 ## New things learnt 
 - navigator.geolocation API 
   + Tracking location of user
@@ -132,3 +133,4 @@ Our platform provides users with the opportunity to share cat pictures while als
 - Donation system 
 - Bonus system: Increase slider range as the user posts more 
 - Optimize performance 
+- Scrum
